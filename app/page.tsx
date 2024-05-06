@@ -14,7 +14,7 @@ const Page = async () => {
             Optimize your images!
             <Uploader />
             <Image src="/api/image/8mtsvc" width={512} height={512} alt={'asd'} />
-            <Image src="/api/image/8mtsvc/optimize" width={512} height={512} alt={'asd'} />
+            {/* <Image src="/api/image/8mtsvc/optimize" width={512} height={512} alt={'asd'} /> */}
             <div className="flex flex-wrap gap-4">
                 {images.map((image) => (
                     <img key={image} src={image} alt="" className="w-32 h-32 object-cover" />
