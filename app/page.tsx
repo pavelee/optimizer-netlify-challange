@@ -2,8 +2,10 @@ import { Uploader } from "components/Uploader";
 import { getImages } from "./actions/getImages";
 import { getImage } from "./actions/getImage";
 import Image from "next/image";
+import { cookies } from "next/headers";
 
 const Page = async () => {
+    const cookie = cookies();
     const images = await getImages();
     const image = await getImage('8mtsvc');
 

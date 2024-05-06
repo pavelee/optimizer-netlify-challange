@@ -1,6 +1,6 @@
 import { getImage } from 'app/actions/getImage';
 import { store } from 'app/utils/store';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 type props = {
@@ -11,6 +11,7 @@ type props = {
 
 export const GET = async (request: NextRequest, props: props) => {
     const head = headers();
+    const cookie = cookies();
     const { key } = props.params;
 
     const host = head.get('host');
