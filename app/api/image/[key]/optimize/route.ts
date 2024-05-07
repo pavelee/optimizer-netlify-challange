@@ -1,6 +1,4 @@
-import { getImage } from 'app/actions/getImage';
-import { store } from 'app/utils/store';
-import { cookies, headers } from 'next/headers';
+import { optimizeImage } from 'app/actions/optimizeImage';
 import { NextRequest, NextResponse } from 'next/server';
 
 type props = {
@@ -10,21 +8,6 @@ type props = {
 };
 
 export const GET = async (request: NextRequest, props: props) => {
-    const head = headers();
-    const cookie = cookies();
-    const { key } = props.params;
-
-    const host = head.get('host');
-    const url = `/api/image/${key}`;
-    const optimizedUrl = `http://${host}/.netlify/images?url=${encodeURIComponent(url)}&q=100&fm=webp`;
-
-    const fetchResponse = await fetch(optimizedUrl);
-
-    const blob = await fetchResponse.blob();
-
-    return new NextResponse(blob, {
-        headers: {
-            'Content-Type': 'image/png'
-        }
-    });
+    const blob = await optimizeImage(props.params.key);
+    return new NextResponse(blob);
 };

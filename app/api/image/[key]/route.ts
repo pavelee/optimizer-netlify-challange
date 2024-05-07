@@ -20,11 +20,7 @@ export const GET = async (request: NextRequest, props: props) => {
     const b = new Blob([blob], { type: 'image/png' });
     console.log(b);
 
-    return new NextResponse(b, {
-        headers: {
-            'Content-Type': 'image/png'
-        }
-    });
+    return new NextResponse(b);
 
     return new Response(blob, {
         headers: {

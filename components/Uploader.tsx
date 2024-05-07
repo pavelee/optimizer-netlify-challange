@@ -1,10 +1,10 @@
 'use client'
 
-import { uploadImage } from "app/actions/uploadImage"
+import { uploadImageAndOptimize } from "app/actions/uploadAndOptimizeImage"
 
 export const Uploader = () => {
     return (
-        <form action={uploadImage}>
+        <form action={uploadImageAndOptimize}>
             <input type="file" name="file" />
             <button type="submit">Upload</button>
         </form>
