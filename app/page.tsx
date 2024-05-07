@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 const Page = async () => {
     const cookie = cookies();
     // const images = await getImages();
-    // const image = await getImage('8mtsvc');
+    const image = await getImage('8mtsvc');
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
