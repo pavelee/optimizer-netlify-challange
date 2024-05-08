@@ -10,10 +10,7 @@ export class NetiflyBlobStore implements StoreInterface<Blob | string> {
     }
 
     public async save(key: string, data: Blob): Promise<Blob> {
-        if (data instanceof Blob) {
-            await this.store.set(key, data);
-        }
-        await this.store.set(key, JSON.stringify(data));
+        await this.store.set(key, data);
         return data;
     }
 
@@ -36,7 +33,7 @@ export class NetiflyBlobStore implements StoreInterface<Blob | string> {
     }
 }
 
-export class NetiflyJsonStore implements StoreInterface<Record<string, unknown>> {
+export class NetiflyJsonStore<T> implements StoreInterface<T> {
     private store: Store;
 
     constructor(private storeName: string, consistency = 'strong') {
@@ -44,20 +41,20 @@ export class NetiflyJsonStore implements StoreInterface<Record<string, unknown>>
         this.store = getStore({ name: storeName, consistency: consistency });
     }
 
-    public async save(key: string, data: Record<string, unknown>): Promise<Record<string, unknown>> {
+    public async save(key: string, data: T): Promise<T> {
         await this.store.set(key, JSON.stringify(data));
         return data;
     }
 
-    public async get(key: string): Promise<Record<string, unknown>> {
+    public async get(key: string): Promise<T> {
         const data = await this.store.get(key);
         if (data) {
             return JSON.parse(data);
         }
-        return {};
+        throw new Error('Data not found');
     }
 
-    public async list(): Promise<Record<string, unknown>[]> {
+    public async list(): Promise<T[]> {
         const list = await this.store.list();
         const result = Promise.all(
             list.blobs.map(async (blob) => {
