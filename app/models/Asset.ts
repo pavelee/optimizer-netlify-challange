@@ -1,7 +1,9 @@
 import { File } from './File';
 
 export class Asset {
-    public constructor(private originalFile: File, private optimizedFile: File) {}
+    private optimizedFile: File;
+
+    public constructor(private originalFile: File) {}
 
     public getOriginalFile(): File {
         return this.originalFile;
