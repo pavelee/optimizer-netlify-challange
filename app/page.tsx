@@ -9,10 +9,6 @@ const Page = async () => {
     const cookie = cookies();
     const images = await BlobStore.list();
 
-    const data = await JsonStore.list();
-    console.log(data);
-    await JsonStore.save('data', { test: 'test' });
-
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
             Optimize your images!
