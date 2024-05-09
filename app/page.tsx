@@ -17,7 +17,10 @@ const Page = async () => {
             <Uploader />
             <div className="flex flex-wrap gap-4">
                 {assets.map((asset) => (
-                    <img key={asset.getOriginalFile().getKey()} src={`/api/image/${asset.getOriginalFile().getKey()}`} alt="" className="w-32 h-32 object-cover" />
+                    <div key={asset.getOriginalFile().getKey()}>
+                        <span>{asset.getOriginalFile().getSize()}</span>
+                        <img key={asset.getOriginalFile().getKey()} src={`/api/image/${asset.getOriginalFile().getKey()}`} alt="" className="w-32 h-32 object-cover" />
+                    </div>
                 ))}
             </div>
         </main>

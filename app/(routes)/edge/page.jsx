@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { Alert } from '../../components/alert';
 import { Markdown } from 'components/markdown';
 
 export const metadata = {
