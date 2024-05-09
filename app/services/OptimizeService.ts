@@ -1,4 +1,4 @@
-import { JsonStore } from 'app/ _config/store';
+import { JsonStore } from 'app/_config/store';
 import { AssetFactory } from 'app/factories/AssetFactory';
 import { Asset } from 'app/models/Asset';
 import { File } from 'app/models/File';

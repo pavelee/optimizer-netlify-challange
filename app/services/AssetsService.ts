@@ -1,4 +1,4 @@
-import { BlobStore, JsonStore } from 'app/ _config/store';
+import { BlobStore, JsonStore } from 'app/_config/store';
 import { AssetFactory } from 'app/factories/AssetFactory';
 import { Asset } from 'app/models/Asset';
 import { Hasher } from 'app/utils/hasher';
