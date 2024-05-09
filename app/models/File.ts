@@ -1,9 +1,9 @@
 export type FileDTO = {
     key: string;
     size: number;
-    sizeInKB: number;
-    sizeInMB: number;
-    sizeInGB: number;
+    sizeInKB?: number;
+    sizeInMB?: number;
+    sizeInGB?: number;
 };
 
 export class File {

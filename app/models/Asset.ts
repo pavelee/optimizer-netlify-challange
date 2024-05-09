@@ -4,7 +4,7 @@ export type AssetDTO = {
     id: string;
     originalFile: FileDTO;
     optimizedFile?: FileDTO;
-    optimizationPercent: number;
+    optimizationPercent?: number;
 };
 
 export class Asset {
