@@ -6,6 +6,7 @@ const Page = async () => {
     const cookie = cookies();
     const as = new AssetsService();
     const assets = await as.getAssets();
+    console.log(assets);
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
@@ -13,9 +14,9 @@ const Page = async () => {
             <Uploader />
             <div className="flex flex-wrap gap-4">
                 {assets.map((asset) => (
-                    <div key={asset.getOriginalFile().getKey()}>
-                        <span>{asset.getOriginalFile().getSize()}</span>
-                        <img key={asset.getOriginalFile().getKey()} src={`/api/image/${asset.getOriginalFile().getKey()}`} alt="" className="w-32 h-32 object-cover" />
+                    <div key={asset.getOptimizedFile().getKey()}>
+                        <span>{asset.getOptimizedFile().getSize()}</span>
+                        <img key={asset.getOptimizedFile().getKey()} src={`/api/image/${asset.getOptimizedFile().getKey()}`} alt="" className="w-32 h-32 object-cover" />
                     </div>
                 ))}
             </div>

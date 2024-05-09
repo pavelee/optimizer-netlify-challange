@@ -7,9 +7,7 @@ export type AssetDTO = {
 };
 
 export class Asset {
-    private optimizedFile: File;
-
-    public constructor(private id: string, private originalFile: File) {}
+    public constructor(private id: string, private originalFile: File, private optimizedFile?: File) {}
 
     public getId(): string {
         return this.id;
@@ -19,15 +17,19 @@ export class Asset {
         return this.originalFile;
     }
 
-    public getOptimizedFile(): File {
+    public getOptimizedFile(): File | undefined {
         return this.optimizedFile;
+    }
+
+    public setOptimizedFile(file: File) {
+        this.optimizedFile = file;
     }
 
     toObject(): AssetDTO {
         return {
             id: this.id,
             originalFile: this.originalFile.toObject(),
-            optimizedFile: undefined //this.optimizedFile.toObject()
+            optimizedFile: this.optimizedFile ? this.optimizedFile.toObject() : undefined
         };
     }
 }
