@@ -1,6 +1,26 @@
 import { Uploader } from "components/Uploader";
 import { cookies } from "next/headers";
 import { AssetsService } from "./services/AssetsService";
+import { AssetDTO } from "./models/Asset";
+
+type props = {
+    asset: AssetDTO;
+}
+
+const AssetItem = (props: props) => {
+    return (
+        <div className="flex gap-4 border border-white">
+            <h3>{props.asset.optimizationPercent}%</h3>
+            <div>
+                <span>{props.asset.originalFile.sizeInKB}</span>
+                <img src={`/api/image/${props.asset.originalFile.key}`} alt="" className="w-32 h-32 object-cover" />
+            </div>
+            <div>
+                <span>{props.asset.optimizedFile.sizeInKB}</span>
+                <img src={`/api/image/${props.asset.optimizedFile.key}`} alt="" className="w-32 h-32 object-cover" />
+            </div>
+        </div>)
+}
 
 const Page = async () => {
     const cookie = cookies();
@@ -14,10 +34,7 @@ const Page = async () => {
             <Uploader />
             <div className="flex flex-wrap gap-4">
                 {assets.map((asset) => (
-                    <div key={asset.getOptimizedFile().getKey()}>
-                        <span>{asset.getOptimizedFile().getSize()}</span>
-                        <img key={asset.getOptimizedFile().getKey()} src={`/api/image/${asset.getOptimizedFile().getKey()}`} alt="" className="w-32 h-32 object-cover" />
-                    </div>
+                    <AssetItem key={asset.getId()} asset={asset.toObject()} />
                 ))}
             </div>
         </main>

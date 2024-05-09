@@ -4,6 +4,7 @@ export type AssetDTO = {
     id: string;
     originalFile: FileDTO;
     optimizedFile?: FileDTO;
+    optimizationPercent: number;
 };
 
 export class Asset {
@@ -25,11 +26,19 @@ export class Asset {
         this.optimizedFile = file;
     }
 
+    public getSizeOptimizationInPercent(): number {
+        if (!this.optimizedFile) {
+            return 0;
+        }
+        return Math.round((1 - this.optimizedFile.getSize() / this.originalFile.getSize()) * 100);
+    }
+
     toObject(): AssetDTO {
         return {
             id: this.id,
             originalFile: this.originalFile.toObject(),
-            optimizedFile: this.optimizedFile ? this.optimizedFile.toObject() : undefined
+            optimizedFile: this.optimizedFile ? this.optimizedFile.toObject() : undefined,
+            optimizationPercent: this.getSizeOptimizationInPercent()
         };
     }
 }
