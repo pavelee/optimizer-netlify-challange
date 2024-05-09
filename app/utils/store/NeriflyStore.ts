@@ -1,17 +1,13 @@
-import { Store, getStore } from '@netlify/blobs';
+import { Store } from '@netlify/blobs';
 import { StoreInterface } from './StoreInterface';
+import { store } from '../store';
 
 export class NetiflyBlobStore implements StoreInterface<Blob | string> {
     private store: Store;
 
-    constructor(private storeName: string, consistency = 'strong') {
+    constructor(storeName: string, consistency = 'strong') {
         // @ts-ignore
-        this.store = getStore({
-            name: storeName,
-            consistency: 'strong',
-            siteID: process.env.SITE_ID,
-            token: process.env.API_TOKEN
-        });
+        this.store = store(storeName);
     }
 
     public async save(key: string, data: Blob): Promise<Blob> {
@@ -41,14 +37,9 @@ export class NetiflyBlobStore implements StoreInterface<Blob | string> {
 export class NetiflyJsonStore<T> implements StoreInterface<T> {
     private store: Store;
 
-    constructor(private storeName: string, consistency = 'strong') {
+    constructor(storeName: string, consistency = 'strong') {
         // @ts-ignore
-        this.store = getStore({
-            name: storeName,
-            consistency: 'strong',
-            siteID: process.env.SITE_ID,
-            token: process.env.API_TOKEN
-        });
+        this.store = store(storeName);
     }
 
     public async save(key: string, data: T): Promise<T> {

@@ -1,8 +1,7 @@
 'use server';
 
-import { store } from 'app/utils/store';
+import { BlobStore } from 'app/_config/store';
 
 export const putImage = async (key: string, image: Blob) => {
-    console.log(image);
-    await store().set(key, image);
+    await BlobStore.save(key, image);
 };

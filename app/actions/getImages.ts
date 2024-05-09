@@ -1,9 +1,8 @@
 'use server';
 
-import { store } from 'app/utils/store';
+import { BlobStore } from 'app/_config/store';
 
 export const getImages = async () => {
-    const data = await store().list();
-    const keys = data.blobs.map(({ key }) => key);
-    return keys;
+    const data = await BlobStore.list();
+    return data;
 };

@@ -1,16 +1,13 @@
 'use server';
 
-import { store } from 'app/utils/store';
+import { BlobStore } from 'app/_config/store';
 
 export const getImage = async (key: string) => {
-    const image = await store().get(key);
+    const image = await BlobStore.get(key);
 
     if (!image) {
         throw new Error('Image not found'); 
     }
 
     return image;
-
-    const blob = new Blob([image], { type: 'image/png' });
-    return blob;
 };
