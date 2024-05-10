@@ -12,12 +12,14 @@ const AssetItem = (props: props) => {
         <div className="flex gap-4 border border-white">
             <h3>{props.asset.optimizationPercent}%</h3>
             <div>
-                <span>{props.asset.originalFile.sizeInKB}</span>
+                <span>{props.asset.originalFile.sizeInKB} {props.asset.originalFile.extension}</span>
                 <img src={`/api/image/${props.asset.originalFile.key}`} alt="" className="w-32 h-32 object-cover" />
+                <a href={`/api/image/${props.asset.originalFile.key}/download`}>download</a>
             </div>
             <div>
-                <span>{props.asset.optimizedFile.sizeInKB}</span>
+                <span>{props.asset.optimizedFile.sizeInKB} {props.asset.optimizedFile.extension}</span>
                 <img src={`/api/image/${props.asset.optimizedFile.key}`} alt="" className="w-32 h-32 object-cover" />
+                <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a>
             </div>
         </div>)
 }
