@@ -9,8 +9,9 @@ import { FileFactory } from 'app/factories/FileFactory';
 export class AssetsService {
     public async createAsset(file: Blob): Promise<Asset> {
         const hash = Hasher.hash();
+        const extension = file.type.split('/')[1];
         await BlobStore.save(hash, file);
-        const f = new File(hash, file.size);
+        const f = new File(hash, file.size, extension);
         const assetHash = Hasher.hash();
         const a = new Asset(assetHash, f);
         await this.saveAsset(a);
@@ -20,9 +21,10 @@ export class AssetsService {
     public async optimizeAsset(asset: Asset) {
         // const file = await BlobStore.get(asset.getOriginalFile().getKey());
         const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey());
+        const extension = optimizedFile.type.split('/')[1];
         const opimizedHash = `optimized-${asset.getOriginalFile().getKey()}`;
         await BlobStore.save(opimizedHash, optimizedFile);
-        asset.setOptimizedFile(FileFactory.createFromDTO({ key: opimizedHash, size: optimizedFile.size }));
+        asset.setOptimizedFile(FileFactory.createFromDTO({ key: opimizedHash, size: optimizedFile.size, extension: extension}));
         await this.saveAsset(asset);
     }
 

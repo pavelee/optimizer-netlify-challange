@@ -7,7 +7,8 @@ import { Hasher } from 'app/utils/hasher';
 export class OptimizeService {
     public async createAsset(file: Blob) {
         const hash = Hasher.hash();
-        const f = new File(hash, file.size);
+        const extension = file.type.split('/')[1];
+        const f = new File(hash, file.size, extension);
         const assetHash = Hasher.hash();
         const a = new Asset(assetHash, f);
         await this.saveAsset(a);
