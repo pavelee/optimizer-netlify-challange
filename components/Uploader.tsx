@@ -111,7 +111,7 @@ export const Uploader = () => {
                                 );
                             }
 
-                            return <div>asdsa</div>;
+                            return null;
                         }}
                     />
                     {isAnyFileUploading === false && (
