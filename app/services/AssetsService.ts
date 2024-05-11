@@ -13,7 +13,7 @@ export class AssetsService {
         await BlobStore.save(hash, file);
         const f = new File(hash, file.size, extension);
         const assetHash = Hasher.hash();
-        const a = new Asset(assetHash, f);
+        const a = new Asset(assetHash, new Date(), f);
         await this.saveAsset(a);
         return a;
     }

@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { AssetsService } from './services/AssetsService';
 import { AssetDTO } from './models/Asset';
 import { Image, Progress } from 'antd';
+import { AssetRepository } from './repository/AssetRepository';
 
 type props = {
     asset: AssetDTO;
@@ -34,8 +35,9 @@ const AssetItem = (props: props) => {
 
 const Page = async () => {
     const cookie = cookies();
+    const ar = new AssetRepository();
     const as = new AssetsService();
-    const assets = await as.getAssets();
+    const assets = await ar.findBy({}, { created: 'desc' });
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
