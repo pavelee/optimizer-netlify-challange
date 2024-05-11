@@ -12,8 +12,15 @@ type props = {
 const AssetItem = (props: props) => {
     return (
         <div className="flex gap-4 border border-white relative">
-            <div className='absolute p-5 rounded-xl border bg-white z-50' style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+            <div
+                className="
+                    absolute p-5 rounded-xl border bg-white z-50
+                    flex flex-col gap-2 justify-center items-center
+                "
+                style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+            >
                 <Progress type="dashboard" percent={props.asset.optimizationPercent} size={80} strokeColor="green" />
+                <span>{props.asset.reductionInKb} kB</span>
             </div>
             {/* <div>
                 <span>
@@ -27,7 +34,7 @@ const AssetItem = (props: props) => {
                     {props.asset.optimizedFile.sizeInKB} {props.asset.optimizedFile.extension}
                 </span> */}
                 <Image src={`/api/image/${props.asset.optimizedFile.key}`} alt="" className="w-32 h-32 object-cover" />
-                <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a>
+                {/* <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a> */}
             </div>
         </div>
     );
@@ -41,9 +48,8 @@ const Page = async () => {
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
-            Optimize your images!
             <Uploader />
-            <div className="flex flex-wrap gap-4">
+            <div className="grid  grid-cols-2 gap-4">
                 {assets.map((asset) => (
                     <AssetItem key={asset.getId()} asset={asset.toObject()} />
                 ))}

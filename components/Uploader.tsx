@@ -13,9 +13,7 @@ export const Uploader = () => {
                     name="file"
                     multiple={true}
                     action="/api/image/optimize"
-                    accept="
-                    image/png,
-                    image/jpeg,"
+                    accept=".png,.jpg,.jpeg"
                     onChange={(info) => {
                         // upload(info.file.originFileObj);
                         const { status } = info.file;
