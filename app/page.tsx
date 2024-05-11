@@ -10,15 +10,17 @@ type props = {
 
 const AssetItem = (props: props) => {
     return (
-        <div className="flex gap-4 border border-white">
-            <Progress type="dashboard" percent={props.asset.optimizationPercent} size={80} strokeColor="green" />
-            <div>
+        <div className="flex gap-4 border border-white relative">
+            <div className='absolute bg-white z-50' style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+                <Progress type="dashboard" percent={props.asset.optimizationPercent} size={80} strokeColor="green" />
+            </div>
+            {/* <div>
                 <span>
                     {props.asset.originalFile.sizeInKB} {props.asset.originalFile.extension}
                 </span>
                 <Image src={`/api/image/${props.asset.originalFile.key}`} alt="" className="w-32 h-32 object-cover" />
                 <a href={`/api/image/${props.asset.originalFile.key}/download`}>download</a>
-            </div>
+            </div> */}
             <div>
                 <span>
                     {props.asset.optimizedFile.sizeInKB} {props.asset.optimizedFile.extension}
