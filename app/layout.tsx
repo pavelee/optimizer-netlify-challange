@@ -19,10 +19,10 @@ export default function RootLayout({ children }) {
             <AntdRegistry>
                 <body className="antialiased">
                     <div className="flex flex-col min-h-screen px-6 bg-grid-pattern sm:px-12">
-                        <div className="flex flex-col w-full max-w-5xl mx-auto grow">
-                            <Header />
+                        <div className="flex flex-col w-full max-w-5xl mx-auto grow p-4">
+                            {/* <Header /> */}
                             <div className="grow">{children}</div>
-                            <Footer />
+                            {/* <Footer /> */}
                         </div>
                     </div>
                 </body>

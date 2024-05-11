@@ -48,6 +48,9 @@ const Page = async () => {
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
+            <div className="flex justify-center items-center gap-4 bg-green-400 p-5 rounded-xl opacity-65">
+                Save the 🌍 with <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
+            </div>
             <Uploader />
             <div className="grid  grid-cols-2 gap-4">
                 {assets.map((asset) => (
