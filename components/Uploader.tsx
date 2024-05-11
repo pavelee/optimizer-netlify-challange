@@ -1,12 +1,26 @@
 'use client';
 
-import { Button, Form, List, Upload, UploadFile } from 'antd';
+import { Button, Form, List, Spin, Upload, UploadFile } from 'antd';
 import { uploadImageAndOptimize } from 'app/actions/uploadAndOptimizeImage';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Uploader = () => {
     const [files, setFiles] = useState<UploadFile[]>([]);
+    const [isAnyFileUploading, setIsAnyFileUploading] = useState(false);
+
+    useEffect(() => {
+        if (files.some((file) => file.status === 'uploading')) {
+            setIsAnyFileUploading(true);
+        } else {
+            setIsAnyFileUploading(false);
+        }
+    }, [files]);
+
+    const isPossibleToDownloadAll = () => {
+        return isAnyFileUploading === false;
+    };
+
     const router = useRouter();
     return (
         <div>
@@ -18,13 +32,14 @@ export const Uploader = () => {
                 accept=".png,.jpg,.jpeg"
                 onChange={(info) => {
                     // upload(info.file.originFileObj);
+                    setFiles(info.fileList);
                     const { status } = info.file;
                     if (status !== 'uploading') {
                         console.log(info.file, info.fileList);
-                        setFiles(info.fileList);
+                        // setFiles(info.fileList);
                     }
                     if (status === 'done') {
-                        router.refresh();
+                        // router.refresh();
                         // message.success(`${info.file.name} file uploaded successfully.`);
                     } else if (status === 'error') {
                         // message.error(`${info.file.name} file upload failed.`);
@@ -46,36 +61,64 @@ export const Uploader = () => {
                         className="border"
                         itemLayout="horizontal"
                         dataSource={files}
-                        renderItem={(file) => (
-                            <List.Item
-                                actions={[
-                                    <a
-                                        key="list-download"
-                                        href={`/api/image/${file.response.optimizedFile.key}/download`}
+                        renderItem={(file) => {
+                            if (file.status === 'uploading') {
+                                return (
+                                    <Spin spinning={true}>
+                                        <List.Item>
+                                            <List.Item.Meta
+                                                avatar={
+                                                    <img
+                                                        src={URL.createObjectURL(file.originFileObj)}
+                                                        alt=""
+                                                        style={{ height: '50px' }}
+                                                    />
+                                                }
+                                                title={file.name}
+                                                description={`Uploading...`}
+                                            />
+                                        </List.Item>
+                                    </Spin>
+                                );
+                            }
+
+                            if (file.status === 'done') {
+                                return (
+                                    <List.Item
+                                        actions={[
+                                            <a
+                                                key="list-download"
+                                                href={`/api/image/${file.response.optimizedFile.key}/download`}
+                                            >
+                                                <Button>Download</Button>
+                                            </a>
+                                        ]}
                                     >
-                                        <Button>Download</Button>
-                                    </a>
-                                ]}
-                            >
-                                <List.Item.Meta
-                                    avatar={
-                                        <img
-                                            src={URL.createObjectURL(file.originFileObj)}
-                                            alt=""
-                                            style={{ height: '50px' }}
-                                        />
-                                    }
-                                    title={file.name}
-                                    description={`
+                                        <List.Item.Meta
+                                            avatar={
+                                                <img
+                                                    src={URL.createObjectURL(file.originFileObj)}
+                                                    alt=""
+                                                    style={{ height: '50px' }}
+                                                />
+                                            }
+                                            title={file.name}
+                                            description={`
                                         You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB) (${file.response.reductionInCarbon} co2)
                                     `}
-                                />
-                            </List.Item>
-                        )}
+                                        />
+                                    </List.Item>
+                                );
+                            }
+
+                            return <div>asdsa</div>;
+                        }}
                     />
-                    <div className="w-full flex justify-end">
-                        <Button type="primary">Download All</Button>
-                    </div>
+                    {isAnyFileUploading === false && (
+                        <div className="w-full flex justify-end">
+                            <Button type="primary">Download All</Button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

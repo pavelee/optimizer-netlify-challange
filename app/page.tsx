@@ -2,7 +2,7 @@ import { Uploader } from 'components/Uploader';
 import { cookies } from 'next/headers';
 import { AssetsService } from './services/AssetsService';
 import { AssetDTO } from './models/Asset';
-import { Image, Progress } from 'antd';
+import { Carousel, Image, Progress } from 'antd';
 import { AssetRepository } from './repository/AssetRepository';
 
 type props = {
@@ -11,33 +11,44 @@ type props = {
 
 const AssetItem = (props: props) => {
     return (
-        <div className="flex gap-4 border border-white relative">
-            <div
-                className="
+        <Carousel arrows infinite={true} autoplay={true}>
+            <div className="flex gap-4 border border-white relative w-[100%] h-[100%]">
+                <div
+                    className="
                     absolute p-5 rounded-xl border bg-white z-50
                     flex flex-col gap-2 justify-center items-center
                 "
-                style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
-            >
-                <Progress type="dashboard" percent={props.asset.optimizationPercent} size={80} strokeColor="green" />
-                <span>{props.asset.reductionInKb} kB</span>
-                <span>{props.asset.reductionInCarbon} co2</span>
-            </div>
-            {/* <div>
+                    style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+                >
+                    <Progress
+                        type="dashboard"
+                        percent={props.asset.optimizationPercent}
+                        size={80}
+                        strokeColor="green"
+                    />
+                    <span>{props.asset.reductionInKb} kB</span>
+                    <span>{props.asset.reductionInCarbon} co2</span>
+                </div>
+                {/* <div>
                 <span>
                     {props.asset.originalFile.sizeInKB} {props.asset.originalFile.extension}
                 </span>
                 <Image src={`/api/image/${props.asset.originalFile.key}`} alt="" className="w-32 h-32 object-cover" />
                 <a href={`/api/image/${props.asset.originalFile.key}/download`}>download</a>
             </div> */}
-            <div>
-                {/* <span>
+                <div>
+                    {/* <span>
                     {props.asset.optimizedFile.sizeInKB} {props.asset.optimizedFile.extension}
                 </span> */}
-                <Image src={`/api/image/${props.asset.optimizedFile.key}`} alt="" className="w-32 h-32 object-cover" />
-                {/* <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a> */}
+                    <Image
+                        src={`/api/image/${props.asset.optimizedFile.key}`}
+                        alt=""
+                        className="w-32 h-32 object-cover"
+                    />
+                    {/* <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a> */}
+                </div>
             </div>
-        </div>
+        </Carousel>
     );
 };
 
@@ -46,6 +57,8 @@ const Page = async () => {
     const ar = new AssetRepository();
     const as = new AssetsService();
     const assets = await ar.findBy({}, { created: 'desc' });
+
+    console.log(assets);
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
