@@ -18,14 +18,17 @@ export class AssetsService {
         return a;
     }
 
-    public async optimizeAsset(asset: Asset) {
+    public async optimizeAsset(asset: Asset): Promise<Asset> {
         // const file = await BlobStore.get(asset.getOriginalFile().getKey());
         const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey());
         const extension = optimizedFile.type.split('/')[1];
         const opimizedHash = `optimized-${asset.getOriginalFile().getKey()}`;
         await BlobStore.save(opimizedHash, optimizedFile);
-        asset.setOptimizedFile(FileFactory.createFromDTO({ key: opimizedHash, size: optimizedFile.size, extension: extension}));
+        asset.setOptimizedFile(
+            FileFactory.createFromDTO({ key: opimizedHash, size: optimizedFile.size, extension: extension })
+        );
         await this.saveAsset(asset);
+        return asset;
     }
 
     public async saveAsset(asset: Asset) {

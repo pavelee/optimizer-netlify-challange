@@ -52,7 +52,7 @@ const Page = async () => {
                 Save the 🌍 with <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
             </div>
             <Uploader />
-            <div className="grid  grid-cols-2 gap-4">
+            <div className="grid  md:grid-cols-2 gap-4">
                 {assets.map((asset) => (
                     <AssetItem key={asset.getId()} asset={asset.toObject()} />
                 ))}
