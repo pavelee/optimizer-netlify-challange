@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Form, List, Spin, Upload, UploadFile } from 'antd';
+import { Button, Form, Image, List, Spin, Upload, UploadFile } from 'antd';
 import { uploadImageAndOptimize } from 'app/actions/uploadAndOptimizeImage';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -23,7 +23,7 @@ export const Uploader = () => {
 
     const router = useRouter();
     return (
-        <div>
+        <div className='bg-white p-5 rounded-xl space-y-5'>
             <Upload.Dragger
                 name="file"
                 multiple={true}
@@ -58,7 +58,7 @@ export const Uploader = () => {
             {files.length > 0 && (
                 <div className="space-y-4">
                     <List
-                        className="border"
+                        className="border-t border-b"
                         itemLayout="horizontal"
                         dataSource={files}
                         renderItem={(file) => {
@@ -96,10 +96,10 @@ export const Uploader = () => {
                                     >
                                         <List.Item.Meta
                                             avatar={
-                                                <img
-                                                    src={URL.createObjectURL(file.originFileObj)}
+                                                <Image
+                                                    src={`api/image/${file.response.optimizedFile.key}`}
                                                     alt=""
-                                                    style={{ height: '50px' }}
+                                                    width={50}
                                                 />
                                             }
                                             title={file.name}
@@ -114,7 +114,7 @@ export const Uploader = () => {
                             return null;
                         }}
                     />
-                    {isAnyFileUploading === false && (
+                    {isPossibleToDownloadAll() && (
                         <div className="w-full flex justify-end">
                             <Button type="primary">Download All</Button>
                         </div>
