@@ -1,3 +1,4 @@
+import { bytesToCo2 } from 'bytes-to-co2';
 import { File, FileDTO } from './File';
 
 export type AssetDTO = {
@@ -6,6 +7,7 @@ export type AssetDTO = {
     originalFile: FileDTO;
     optimizedFile?: FileDTO;
     optimizationPercent?: number;
+    reductionInCarbon?: number;
     reductionInKb?: number;
 };
 
@@ -65,6 +67,17 @@ export class Asset {
         }
     }
 
+    public getReductionInCarbon(): number {
+        if (!this.optimizedFile) {
+            return 0;
+        }
+        const co2 = bytesToCo2({
+            byteSize: this.getSizeReductionIn('B'),
+            isDataAdjusted: false
+        });
+        return this.round(co2, 2);
+    }
+
     toObject(): AssetDTO {
         return {
             id: this.id,
@@ -72,6 +85,7 @@ export class Asset {
             optimizedFile: this.optimizedFile ? this.optimizedFile.toObject() : undefined,
             optimizationPercent: this.getSizeOptimizationInPercent(),
             reductionInKb: this.getSizeReductionIn('KB'),
+            reductionInCarbon: this.getReductionInCarbon(),
             created: this.created
         };
     }

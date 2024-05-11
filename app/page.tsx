@@ -21,6 +21,7 @@ const AssetItem = (props: props) => {
             >
                 <Progress type="dashboard" percent={props.asset.optimizationPercent} size={80} strokeColor="green" />
                 <span>{props.asset.reductionInKb} kB</span>
+                <span>{props.asset.reductionInCarbon} co2</span>
             </div>
             {/* <div>
                 <span>

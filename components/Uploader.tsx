@@ -67,7 +67,7 @@ export const Uploader = () => {
                                     }
                                     title={file.name}
                                     description={`
-                                        You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB)
+                                        You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB) (${file.response.reductionInCarbon} co2)
                                     `}
                                 />
                             </List.Item>
