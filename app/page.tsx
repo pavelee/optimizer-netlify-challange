@@ -11,7 +11,7 @@ type props = {
 const AssetItem = (props: props) => {
     return (
         <div className="flex gap-4 border border-white relative">
-            <div className='absolute bg-white z-50' style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
+            <div className='absolute p-5 rounded-xl border bg-white z-50' style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
                 <Progress type="dashboard" percent={props.asset.optimizationPercent} size={80} strokeColor="green" />
             </div>
             {/* <div>
@@ -22,9 +22,9 @@ const AssetItem = (props: props) => {
                 <a href={`/api/image/${props.asset.originalFile.key}/download`}>download</a>
             </div> */}
             <div>
-                <span>
+                {/* <span>
                     {props.asset.optimizedFile.sizeInKB} {props.asset.optimizedFile.extension}
-                </span>
+                </span> */}
                 <Image src={`/api/image/${props.asset.optimizedFile.key}`} alt="" className="w-32 h-32 object-cover" />
                 <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a>
             </div>
