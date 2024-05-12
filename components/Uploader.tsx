@@ -205,7 +205,7 @@ export const Uploader = (props: UploaderProps) => {
                                                     width={50}
                                                 />
                                             }
-                                            title={file.name}
+                                            title={file.response.optimizedFile.fullName}
                                             description={`
                                         You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB) (${file.response.reductionInCarbon} ${CARBON_UNIT})
                                     `}

@@ -34,7 +34,11 @@ export class AssetsService {
         const hash = UniqueHashGenerator.generateHash();
         const extension = file.type.split('/')[1];
         await BlobStore.save(hash, file);
-        const name = fileName || `file.${extension}`;
+        let name = `file.${extension}`;
+        if (fileName) {
+            let n = fileName.split('.');
+            name = n[0];
+        }
         const f = new File(hash, name, file.size, extension);
         const assetHash = UniqueHashGenerator.generateHash();
         const a = new Asset(assetHash, new Date(), f);
@@ -45,11 +49,16 @@ export class AssetsService {
     public async optimizeAsset(asset: Asset, quality: number = 75): Promise<Asset> {
         // const file = await BlobStore.get(asset.getOriginalFile().getKey());
         const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey(), quality.toString());
-        const extension = 'webp';//asset.getOriginalFile().getExtension();
+        const extension = 'webp'; //asset.getOriginalFile().getExtension();
         const optimizedHashValue = `optimized-${asset.getOriginalFile().getKey()}`;
         await BlobStore.save(optimizedHashValue, optimizedFile);
         asset.setOptimizedFile(
-            FileFactory.createFromDTO({ key: optimizedHashValue, name: asset.getOriginalFile().getName(), size: optimizedFile.size, extension: extension })
+            FileFactory.createFromDTO({
+                key: optimizedHashValue,
+                name: asset.getOriginalFile().getName(),
+                size: optimizedFile.size,
+                extension: extension
+            })
         );
         await this.saveAsset(asset);
         return asset;

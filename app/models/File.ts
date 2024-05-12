@@ -1,6 +1,7 @@
 export type FileDTO = {
     key: string;
     name: string;
+    fullName?: string;
     size: number;
     extension: string;
     sizeInKB?: number;
@@ -9,7 +10,12 @@ export type FileDTO = {
 };
 
 export class File {
-    constructor(private readonly key: string, private name: string, private readonly size: number, private readonly extension) {}
+    constructor(
+        private readonly key: string,
+        private name: string,
+        private readonly size: number,
+        private readonly extension
+    ) {}
 
     public getKey(): string {
         return this.key;
@@ -17,6 +23,10 @@ export class File {
 
     public getName(): string {
         return this.name;
+    }
+
+    public getFullName(): string {
+        return `${this.name}.${this.extension}`;
     }
 
     public getSize(): number {
@@ -44,12 +54,13 @@ export class File {
         return Math.round(this.getSizeIn(unit) * 100) / 100;
     }
 
-    toObject() {
+    toObject(): FileDTO {
         return {
-            key: this.key,
-            name: this.name,
-            size: this.size,
-            extension: this.extension,
+            key: this.getKey(),
+            name: this.getName(),
+            fullName: this.getFullName(),
+            size: this.getSize(),
+            extension: this.getExtension(),
             sizeInKB: this.getRoundedSizeIn('KB'),
             sizeInMB: this.getRoundedSizeIn('MB'),
             sizeInGB: this.getRoundedSizeIn('GB')
