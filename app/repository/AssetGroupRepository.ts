@@ -74,12 +74,12 @@ export class AssetGroupRepository {
             })
         );
 
-        let bestUnit = 'KB';
-        const smartReduction = assetGroups.reduce((acc, assetGroup) => {
-            const { value, unit } = assetGroup.getSmartReductionInBestUnit();
-            bestUnit = unit;
+        const reduction = assetGroups.reduce((acc, assetGroup) => {
+            const value = assetGroup.getSizeIn('B');
             return acc + value;
         }, 0);
+        const smartReduction = Math.round(reduction / 1024);
+        const bestUnit = smartReduction > 1024 ? 'MB' : 'KB';
 
         const reductionInCarbon = assetGroups.reduce((acc, assetGroup) => {
             return acc + assetGroup.getReductionInCarbon();

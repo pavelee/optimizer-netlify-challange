@@ -129,6 +129,26 @@ export const Uploader = (props: UploaderProps) => {
         window.history.pushState({}, '', url.toString());
     }, []);
 
+    useEffect(() => {
+        const fetchGrup = async () => {
+            let g: AssetGroupDto | null = group;
+            if (!g) {
+                const response = await fetch('/api/group', {
+                    method: 'POST',
+                    body: JSON.stringify({}),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const json = await response.json();
+                g = json;
+                setAssetGroup(json);
+                addGroupIdToCurrentUrl(g.id);
+            }
+        }
+        fetchGrup();
+    }, [group, addGroupIdToCurrentUrl, setAssetGroup])
+
     const isPossibleToDownloadAll = useCallback(() => {
         return isAnyFileUploading === false && assetGroup && assetGroup.assets.length > 0;
     }, [isAnyFileUploading, assetGroup]);
@@ -158,26 +178,11 @@ export const Uploader = (props: UploaderProps) => {
     }, [assetGroup, group, refreshAssetGroup]);
 
     const uploaderCustomRequest = useCallback(async (options) => {
-        let g: AssetGroupDto | null = assetGroup;
-        if (!g) {
-            const response = await fetch('/api/group', {
-                method: 'POST',
-                body: JSON.stringify({}),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            const json = await response.json();
-            g = json;
-            setAssetGroup(json);
-            addGroupIdToCurrentUrl(g.id);
-        }
-
         const form = new FormData();
         form.append('file', options.file);
         // @ts-ignore it exists.. 😭
         form.append('fileName', options.file.name ? options.file.name : 'file');
-        form.append('groupId', g.id);
+        form.append('groupId', assetGroup.id);
         form.append('q', quality.toString());
         try {
             const response = await fetch('/api/image/optimize', {
@@ -192,7 +197,7 @@ export const Uploader = (props: UploaderProps) => {
         } catch (e) {
             options.onError(e.message);
         }
-    }, [assetGroup, quality, addGroupIdToCurrentUrl]);
+    }, [assetGroup, quality]);
 
     return (
         <div className='bg-white p-5 rounded-xl space-y-5 shadow'>
