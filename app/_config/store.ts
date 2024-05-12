@@ -1,7 +1,7 @@
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { AssetDTO } from 'app/models/Asset';
-import { NetiflyBlobStore, NetiflyJsonStore } from 'app/utils/store/NeriflyStore';
+import { NetlifyBlobStore, NetlifyJsonStore } from 'app/utils/store/NetlifyStore';
 
-export const BlobStore = new NetiflyBlobStore('images');
-export const JsonStore = new NetiflyJsonStore<AssetDTO>('data');
-export const AssetGroupStore = new NetiflyJsonStore<AssetGroupDto>('assetGroups');
+export const BlobStore = new NetlifyBlobStore('images');
+export const JsonStore = new NetlifyJsonStore<AssetDTO>('data');
+export const AssetGroupStore = new NetlifyJsonStore<AssetGroupDto>('assetGroups');

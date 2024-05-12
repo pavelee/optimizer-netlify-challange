@@ -2,7 +2,7 @@ import { Store } from '@netlify/blobs';
 import { StoreInterface } from './StoreInterface';
 import { store } from '../store';
 
-export class NetiflyBlobStore implements StoreInterface<Blob | string> {
+export class NetlifyBlobStore implements StoreInterface<Blob | string> {
     private store: Store;
 
     constructor(storeName: string, consistency = 'strong') {
@@ -34,7 +34,7 @@ export class NetiflyBlobStore implements StoreInterface<Blob | string> {
     }
 }
 
-export class NetiflyJsonStore<T> implements StoreInterface<T> {
+export class NetlifyJsonStore<T> implements StoreInterface<T> {
     private store: Store;
 
     constructor(storeName: string, consistency = 'strong') {
