@@ -1,5 +1,6 @@
 import { bytesToCo2 } from 'bytes-to-co2';
 import { File, FileDTO } from './File';
+import { MathRounder } from 'app/services/MathRounder';
 
 export type AssetDTO = {
     id: string;
@@ -8,7 +9,9 @@ export type AssetDTO = {
     optimizedFile?: FileDTO;
     optimizationPercent?: number;
     reductionInCarbon?: number;
+    reductionInB?: number;
     reductionInKb?: number;
+    reductionInMb?: number;
 };
 
 export class Asset {
@@ -47,7 +50,7 @@ export class Asset {
     }
 
     private round(value: number, decimals: number) {
-        return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+        return MathRounder.round(value, decimals);
     }
 
     public getSizeReductionIn(unit: 'KB' | 'MB' | 'B' = 'KB') {
@@ -84,7 +87,9 @@ export class Asset {
             originalFile: this.originalFile.toObject(),
             optimizedFile: this.optimizedFile ? this.optimizedFile.toObject() : undefined,
             optimizationPercent: this.getSizeOptimizationInPercent(),
+            reductionInB: this.getSizeReductionIn('B'),
             reductionInKb: this.getSizeReductionIn('KB'),
+            reductionInMb: this.getSizeReductionIn('MB'),
             reductionInCarbon: this.getReductionInCarbon(),
             created: this.created
         };

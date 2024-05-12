@@ -2,7 +2,6 @@
 
 import { Button, Form, Image, List, Spin, Upload, UploadFile } from 'antd';
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
-import { group } from 'console';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

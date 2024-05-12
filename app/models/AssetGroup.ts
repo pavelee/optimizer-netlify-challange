@@ -1,8 +1,13 @@
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { Asset } from './Asset';
+import { MathRounder } from 'app/services/MathRounder';
 
 export class AssetGroup {
     constructor(private id: string, private created: Date, private assets: Asset[] = []) {}
+
+    private round(value: number, decimals: number) {
+        return MathRounder.round(value, decimals);
+    }
 
     public getId(): string {
         return this.id;
@@ -25,11 +30,17 @@ export class AssetGroup {
     }
 
     public getReductionIn(unit: 'KB' | 'MB' | 'B' = 'KB'): number {
-        return this.assets.reduce((acc, asset) => acc + asset.getSizeReductionIn(unit), 0);
+        return this.round(
+            this.assets.reduce((acc, asset) => acc + asset.getSizeReductionIn(unit), 0),
+            2
+        );
     }
 
     public getReductionInCarbon(): number {
-        return this.assets.reduce((acc, asset) => acc + asset.getReductionInCarbon(), 0);
+        return this.round(
+            this.assets.reduce((acc, asset) => acc + asset.getReductionInCarbon(), 0),
+            2
+        );
     }
 
     public toObject(): AssetGroupDto {
