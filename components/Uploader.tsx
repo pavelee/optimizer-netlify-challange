@@ -85,7 +85,7 @@ export const Uploader = (props: UploaderProps) => {
     };
 
     return (
-        <div className='bg-white p-5 rounded-xl space-y-5'>
+        <div className='bg-white p-5 rounded-xl space-y-5 shadow'>
             <Upload.Dragger
                 name="file"
                 multiple={true}

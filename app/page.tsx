@@ -18,7 +18,7 @@ const AssetItem = (props: props) => {
             {
                 group.assets.map((asset: AssetDTO) => {
                     return (
-                        <div key={asset.id} className="flex gap-4 border border-white relative w-[100%] h-[100%]">
+                        <div key={asset.id} className="flex gap-4 rounded-xl relative w-[100%] h-[100%] shadow">
                             <div
                                 className="
                             absolute p-5 rounded-xl border bg-white z-50
@@ -73,17 +73,20 @@ const Page = async (props: PageProps) => {
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
-            <div className="flex justify-center items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white">
+            <div className="flex justify-center items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white shadow">
                 {['minify', 'your', '🏞️', 'and', 'save', 'the', '🌍', 'with'].map((word) => (
                     <span key={word}>{word}</span>
                 ))}
                 <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
             </div>
             <Uploader group={group} />
-            <div className="grid  md:grid-cols-2 gap-4">
-                {groups.map((group) => (
-                    <AssetItem key={group.id} group={group} />
-                ))}
+            <div className='space-y-4'>
+                <h2 className="text-xl bg-white rounded-xl p-4 opacity-85 border shadow">Contributors 💖</h2>
+                <div className="grid  md:grid-cols-2 gap-4">
+                    {groups.map((group) => (
+                        <AssetItem key={group.id} group={group} />
+                    ))}
+                </div>
             </div>
         </main>
     );
