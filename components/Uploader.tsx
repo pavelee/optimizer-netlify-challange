@@ -5,6 +5,7 @@ import { CARBON_UNIT } from 'app/_config/constants';
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { InboxOutlined } from '@ant-design/icons';
 
 type UploaderProps = {
     group?: AssetGroupDto
@@ -154,10 +155,14 @@ export const Uploader = (props: UploaderProps) => {
                 onDrop={(e) => {
                 }}
             >
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                    Drag & drop your files here or click to select. You can upload multiple files at once.
+                </p>
                 <p className="ant-upload-hint">
-                    Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned
-                    files.
+                    Images will be converted to webp format and optimized. Only .png, .jpg, .jpeg files are allowed.
                 </p>
             </Upload.Dragger>
             <div className="space-y-2">
