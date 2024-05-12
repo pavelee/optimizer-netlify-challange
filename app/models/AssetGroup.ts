@@ -24,6 +24,10 @@ export class AssetGroup {
         return this.assets;
     }
 
+    public getReductionIn(unit: 'KB' | 'MB' | 'B' = 'KB'): number {
+        return this.assets.reduce((acc, asset) => acc + asset.getSizeReductionIn(unit), 0);
+    }
+
     public getReductionInCarbon(): number {
         return this.assets.reduce((acc, asset) => acc + asset.getReductionInCarbon(), 0);
     }
@@ -32,6 +36,9 @@ export class AssetGroup {
         return {
             id: this.id,
             assets: this.assets.map((asset) => asset.toObject()),
+            reductionInB: this.getReductionIn('B'),
+            reductionInKb: this.getReductionIn('KB'),
+            reductionInMb: this.getReductionIn('MB'),
             reductionInCarbon: this.getReductionInCarbon(),
             created: this.created
         };

@@ -6,6 +6,7 @@ import { File } from 'app/models/File';
 import { optimizeImage } from 'app/actions/optimizeImage';
 import { FileFactory } from 'app/factories/FileFactory';
 import { AssetGroup } from 'app/models/AssetGroup';
+import { AssetGroupFactory } from 'app/factories/AssetGroupFactory';
 
 export class AssetsService {
     public async createAssetGroup(assets: Asset[] = []): Promise<AssetGroup> {
@@ -15,11 +16,26 @@ export class AssetsService {
         return assetGroup;
     }
 
-    public async createAsset(file: Blob): Promise<Asset> {
+    public async getAssetGroup(assetGroupId: string): Promise<AssetGroup> {
+        const assetGroup = await AssetGroupStore.get(assetGroupId);
+        if (!assetGroup) {
+            throw new Error('Asset group not found');
+        }
+        return await AssetGroupFactory.createFromDto(assetGroup);
+    }
+
+    public async addAssetToGroup(assetGroup: AssetGroup, asset: Asset): Promise<AssetGroup> {
+        assetGroup.add(asset);
+        await this.saveGroupAsset(assetGroup);
+        return assetGroup;
+    }
+
+    public async createAsset(file: Blob, fileName: string | undefined): Promise<Asset> {
         const hash = UniqueHashGenerator.generateHash();
         const extension = file.type.split('/')[1];
         await BlobStore.save(hash, file);
-        const f = new File(hash, file.size, extension);
+        const name = fileName || `file.${extension}`;
+        const f = new File(hash, name, file.size, extension);
         const assetHash = UniqueHashGenerator.generateHash();
         const a = new Asset(assetHash, new Date(), f);
         await this.saveAsset(a);
@@ -33,7 +49,7 @@ export class AssetsService {
         const optimizedHashValue = `optimized-${asset.getOriginalFile().getKey()}`;
         await BlobStore.save(optimizedHashValue, optimizedFile);
         asset.setOptimizedFile(
-            FileFactory.createFromDTO({ key: optimizedHashValue, size: optimizedFile.size, extension: extension })
+            FileFactory.createFromDTO({ key: optimizedHashValue, name: asset.getOriginalFile().getName(), size: optimizedFile.size, extension: extension })
         );
         await this.saveAsset(asset);
         return asset;

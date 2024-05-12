@@ -1,14 +1,31 @@
 'use client';
 
 import { Button, Form, Image, List, Spin, Upload, UploadFile } from 'antd';
-import { uploadImageAndOptimize } from 'app/actions/uploadAndOptimizeImage';
+import { AssetGroupDto } from 'app/dto/AssetGroupDto';
+import { group } from 'console';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export const Uploader = () => {
-    const [groupId, setGroupId] = useState<string | null>(null);
+type UploaderProps = {
+    group?: AssetGroupDto
+};
+
+export const Uploader = (props: UploaderProps) => {
+    const { group } = props;
+    const [assetGroup, setAssetGroup] = useState<AssetGroupDto | undefined>(group);
     const [files, setFiles] = useState<UploadFile[]>([]);
     const [isAnyFileUploading, setIsAnyFileUploading] = useState(false);
+
+    useEffect(() => {
+        if (group) {
+            setFiles(group.assets.map((asset) => ({
+                uid: asset.id,
+                name: asset.optimizedFile.name,
+                status: 'done',
+                response: asset
+            })));
+        }
+    }, [setFiles, group]);
 
     useEffect(() => {
         if (files.some((file) => file.status === 'uploading')) {
@@ -17,6 +34,18 @@ export const Uploader = () => {
             setIsAnyFileUploading(false);
         }
     }, [files]);
+
+    const refreshAssetGroup = async (group: AssetGroupDto) => {
+        const response = await fetch(`/api/group/${group.id}`);
+        const json = await response.json();
+        setAssetGroup(json);
+    }
+
+    const addGroupIdToCurrentUrl = (groupId: string) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('g', groupId);
+        window.history.pushState({}, '', url.toString());
+    }
 
     const getSummary = () => {
         const totalReductionInKb = files.reduce((acc, file) => {
@@ -52,8 +81,28 @@ export const Uploader = () => {
                 showUploadList={false}
                 action="/api/image/optimize"
                 customRequest={async (options) => {
+                    let g: AssetGroupDto | null = assetGroup;
+                    if (!g) {
+                        const response = await fetch('/api/group', {
+                            method: 'POST',
+                            body: JSON.stringify({}),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        const json = await response.json();
+                        g = json;
+                        setAssetGroup(json);
+                        addGroupIdToCurrentUrl(g.id);
+                    }
+
+                    console.log(options);
+
                     const form = new FormData();
                     form.append('file', options.file);
+                    // @ts-ignore it exists.. 😭
+                    form.append('fileName', options.file.name ? options.file.name : 'file');
+                    form.append('groupId', g.id);
                     const response = await fetch('/api/image/optimize', {
                         method: 'POST',
                         body: form
@@ -63,14 +112,24 @@ export const Uploader = () => {
                 }}
                 accept=".png,.jpg,.jpeg"
                 onChange={(info) => {
-                    // upload(info.file.originFileObj);
-                    setFiles(info.fileList);
+                    setFiles([
+                        ...(assetGroup ? assetGroup.assets.map((asset) => ({
+                            uid: asset.id,
+                            name: asset.optimizedFile.name,
+                            status: 'done',
+                            response: asset
+                        })) as UploadFile<any>[] : []),
+                        ...info.fileList
+                    ]);
                     const { status } = info.file;
                     if (status !== 'uploading') {
                         console.log(info.file, info.fileList);
                         // setFiles(info.fileList);
                     }
                     if (status === 'done') {
+                        if (assetGroup) {
+                            refreshAssetGroup(assetGroup);
+                        }
                         // router.refresh();
                         // message.success(`${info.file.name} file uploaded successfully.`);
                     } else if (status === 'error') {
@@ -78,7 +137,6 @@ export const Uploader = () => {
                     }
                 }}
                 onDrop={(e) => {
-                    console.log('Dropped files', e.dataTransfer.files);
                 }}
             >
                 <p className="ant-upload-text">Click or drag file to this area to upload</p>
@@ -147,9 +205,13 @@ export const Uploader = () => {
                         }}
                     />
                     <div className="flex items-center">
-                        <div className='text-gray-400 text-sm grow'>
-                            🌲 Total reduction: {getSummary().totalReductionInKb} kB ({getSummary().totalReductionInCarbon} co2)
-                        </div>
+                        {
+                            assetGroup && (
+                                <div className='text-gray-400 text-sm grow'>
+                                    🌲 Total reduction: {assetGroup.reductionInKb} kB ({assetGroup.reductionInCarbon} co2)
+                                </div>
+                            )
+                        }
                         {isPossibleToDownloadAll() && (
                             <div className="flex justify-end">
                                 <Button type="primary">Download All</Button>
@@ -159,19 +221,5 @@ export const Uploader = () => {
                 </div>
             )}
         </div>
-    );
-
-    return (
-        <form action={uploadImageAndOptimize}>
-            <input
-                type="file"
-                name="file"
-                accept="
-                image/png,
-                image/jpeg,
-            "
-            />
-            <button type="submit">Upload</button>
-        </form>
     );
 };

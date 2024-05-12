@@ -4,6 +4,7 @@ import { AssetsService } from './services/AssetsService';
 import { AssetDTO } from './models/Asset';
 import { Carousel, Image, Progress } from 'antd';
 import { AssetRepository } from './repository/AssetRepository';
+import { AssetGroupDto } from './dto/AssetGroupDto';
 
 type props = {
     asset: AssetDTO;
@@ -52,20 +53,31 @@ const AssetItem = (props: props) => {
     );
 };
 
-const Page = async () => {
+type PageProps = {
+    searchParams: {
+        g?: string;
+    }
+}
+
+const Page = async (props: PageProps) => {
+    const { searchParams } = props;
+    const { g } = searchParams;
     const cookie = cookies();
     const ar = new AssetRepository();
     const as = new AssetsService();
     const assets = await ar.findBy({}, { created: 'desc' });
-
-    console.log(assets);
+    let group: AssetGroupDto | undefined;
+    if (g) {
+        let t = await as.getAssetGroup(g);
+        group = await t.toObject();
+    }
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
             <div className="flex justify-center items-center gap-4 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white">
                 Save the 🌍 with <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
             </div>
-            <Uploader />
+            <Uploader group={group} />
             <div className="grid  md:grid-cols-2 gap-4">
                 {assets.map((asset) => (
                     <AssetItem key={asset.getId()} asset={asset.toObject()} />

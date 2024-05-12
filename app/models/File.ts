@@ -1,5 +1,6 @@
 export type FileDTO = {
     key: string;
+    name: string;
     size: number;
     extension: string;
     sizeInKB?: number;
@@ -8,10 +9,14 @@ export type FileDTO = {
 };
 
 export class File {
-    constructor(private readonly key: string, private readonly size: number, private readonly extension) {}
+    constructor(private readonly key: string, private name: string, private readonly size: number, private readonly extension) {}
 
     public getKey(): string {
         return this.key;
+    }
+
+    public getName(): string {
+        return this.name;
     }
 
     public getSize(): number {
@@ -42,6 +47,7 @@ export class File {
     toObject() {
         return {
             key: this.key,
+            name: this.name,
             size: this.size,
             extension: this.extension,
             sizeInKB: this.getRoundedSizeIn('KB'),
