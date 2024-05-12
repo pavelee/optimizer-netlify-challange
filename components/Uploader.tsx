@@ -230,7 +230,7 @@ export const Uploader = (props: UploaderProps) => {
                         dataSource={files}
                         renderItem={(file) => (<UploaderListItem file={file} />)}
                     />
-                    <div className="flex items-center">
+                    <div className="flex gap-4 items-center">
                         {
                             assetGroup && (
                                 <div className='text-gray-400 text-sm grow'>
@@ -239,7 +239,7 @@ export const Uploader = (props: UploaderProps) => {
                             )
                         }
                         {isPossibleToDownloadAll() && (
-                            <div className="flex justify-end gap-2">
+                            <div className="flex flex-col md:flex-row justify-end gap-2">
                                 <Button
                                     onClick={async () => {
                                         const url = window.location.href;

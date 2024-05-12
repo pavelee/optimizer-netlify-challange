@@ -52,7 +52,7 @@ const Page = async (props: PageProps) => {
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
             <div className='space-y-4'>
-                <div className="flex justify-center items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white shadow">
+                <div className="flex justify-center flex-wrap items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white shadow">
                     {['minify', 'your', '🏞️', 'and', 'save', 'the', '🌍', 'with'].map((word) => (
                         <span key={word}>{word}</span>
                     ))}
