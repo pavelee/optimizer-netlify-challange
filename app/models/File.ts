@@ -1,8 +1,12 @@
+import { MathRounder } from 'app/services/MathRounder';
+import { SmartReduction } from './AssetGroup';
+
 export type FileDTO = {
     key: string;
     name: string;
     fullName?: string;
     size: number;
+    smartSize?: SmartReduction;
     extension: string;
     sizeInKB?: number;
     sizeInMB?: number;
@@ -33,6 +37,14 @@ export class File {
         return this.size;
     }
 
+    public getSmartSize(): SmartReduction {
+        const sizeInKB = this.getRoundedSizeIn('KB');
+        if (sizeInKB > 1024) {
+            return { value: this.getRoundedSizeIn('MB'), unit: 'MB' };
+        }
+        return { value: sizeInKB, unit: 'KB' };
+    }
+
     public getExtension(): string {
         return this.extension;
     }
@@ -51,7 +63,7 @@ export class File {
     }
 
     public getRoundedSizeIn(unit: string): number {
-        return Math.round(this.getSizeIn(unit) * 100) / 100;
+        return MathRounder.round(this.getSizeIn(unit), 2);
     }
 
     toObject(): FileDTO {
@@ -60,6 +72,7 @@ export class File {
             name: this.getName(),
             fullName: this.getFullName(),
             size: this.getSize(),
+            smartSize: this.getSmartSize(),
             extension: this.getExtension(),
             sizeInKB: this.getRoundedSizeIn('KB'),
             sizeInMB: this.getRoundedSizeIn('MB'),

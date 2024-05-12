@@ -58,6 +58,10 @@ const UploaderListItem = (props: { file: UploadFile }) => {
         return (
             <List.Item
                 actions={[
+                    <div key='download-size' className='flex gap-2'>
+                        <span className='line-through'>{file.response.originalFile.smartSize.value}  {file.response.originalFile.smartSize.unit}</span>
+                        <span>{file.response.optimizedFile.smartSize.value}  {file.response.optimizedFile.smartSize.unit}</span>
+                    </div>,
                     <a
                         key="list-download"
                         href={`/api/image/${file.response.optimizedFile.key}/download`}
@@ -243,7 +247,7 @@ export const Uploader = (props: UploaderProps) => {
                                     }}
                                 >copy link</Button>
                                 <a href={`api/group/${assetGroup.id}/download`}>
-                                    <Button type="primary">Download All</Button>
+                                    <Button type="primary">Download All ({assetGroup.smartSize.value} {assetGroup.smartSize.unit})</Button>
                                 </a>
                             </div>
                         )}

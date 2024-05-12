@@ -48,6 +48,18 @@ export class AssetGroup {
         );
     }
 
+    public getSizeIn(unit: 'KB' | 'MB' | 'B' = 'KB'): number {
+        return this.round(this.assets.reduce((acc, asset) => acc + asset.getOptimizedFile().getSizeIn(unit), 0), 2);
+    }
+
+    public getSmartSizeInBestUnit(): SmartReduction {
+        const sizeInKb = this.getSizeIn('KB');
+        if (sizeInKb > 1024) {
+            return { value: this.getSizeIn('MB'), unit: 'MB' };
+        }
+        return { value: sizeInKb, unit: 'KB' };
+    }
+
     public getSmartReductionInBestUnit(): SmartReduction {
         const reductionInKb = this.getReductionIn('KB');
         if (reductionInKb > 1024) {
@@ -60,11 +72,15 @@ export class AssetGroup {
         return {
             id: this.id,
             assets: this.assets.map((asset) => asset.toObject()),
+            smartSize: this.getSmartSizeInBestUnit(),
             smartReduction: this.getSmartReductionInBestUnit(),
             reductionInB: this.getReductionIn('B'),
             reductionInKb: this.getReductionIn('KB'),
             reductionInMb: this.getReductionIn('MB'),
             reductionInCarbon: this.getReductionInCarbon(),
+            sizeInB: this.getSizeIn('B'),
+            sizeInKb: this.getSizeIn('KB'),
+            sizeInMb: this.getSizeIn('MB'),
             created: this.created
         };
     }
