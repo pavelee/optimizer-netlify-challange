@@ -5,50 +5,47 @@ import { AssetDTO } from './models/Asset';
 import { Carousel, Image, Progress } from 'antd';
 import { AssetRepository } from './repository/AssetRepository';
 import { AssetGroupDto } from './dto/AssetGroupDto';
+import { AssetGroupRepository } from './repository/AssetGroupRepository';
 
 type props = {
-    asset: AssetDTO;
+    group: AssetGroupDto;
 };
 
 const AssetItem = (props: props) => {
+    const { group } = props;
     return (
         <Carousel arrows infinite={true} autoplay={true}>
-            <div className="flex gap-4 border border-white relative w-[100%] h-[100%]">
-                <div
-                    className="
-                    absolute p-5 rounded-xl border bg-white z-50
-                    flex flex-col gap-2 justify-center items-center
-                "
-                    style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
-                >
-                    <Progress
-                        type="dashboard"
-                        percent={props.asset.optimizationPercent}
-                        size={80}
-                        strokeColor="green"
-                    />
-                    <span>{props.asset.reductionInKb} kB</span>
-                    <span>{props.asset.reductionInCarbon} co2</span>
-                </div>
-                {/* <div>
-                <span>
-                    {props.asset.originalFile.sizeInKB} {props.asset.originalFile.extension}
-                </span>
-                <Image src={`/api/image/${props.asset.originalFile.key}`} alt="" className="w-32 h-32 object-cover" />
-                <a href={`/api/image/${props.asset.originalFile.key}/download`}>download</a>
-            </div> */}
-                <div>
-                    {/* <span>
-                    {props.asset.optimizedFile.sizeInKB} {props.asset.optimizedFile.extension}
-                </span> */}
-                    <Image
-                        src={`/api/image/${props.asset.optimizedFile.key}`}
-                        alt=""
-                        className="w-32 h-32 object-cover"
-                    />
-                    {/* <a href={`/api/image/${props.asset.optimizedFile.key}/download`}>download</a> */}
-                </div>
-            </div>
+            {
+                group.assets.map((asset: AssetDTO) => {
+                    return (
+                        <div key={asset.id} className="flex gap-4 border border-white relative w-[100%] h-[100%]">
+                            <div
+                                className="
+                            absolute p-5 rounded-xl border bg-white z-50
+                            flex flex-col gap-2 justify-center items-center
+                        "
+                                style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
+                            >
+                                <Progress
+                                    type="dashboard"
+                                    percent={asset.optimizationPercent}
+                                    size={80}
+                                    strokeColor="green"
+                                />
+                                <span>{asset.reductionInKb} kB</span>
+                                <span>{asset.reductionInCarbon} co2</span>
+                            </div>
+                            <div>
+                                <Image
+                                    src={`/api/image/${asset.optimizedFile.key}`}
+                                    alt=""
+                                    className="w-32 h-32 object-cover"
+                                />
+                            </div>
+                        </div>
+                    );
+                })
+            }
         </Carousel>
     );
 };
@@ -64,13 +61,17 @@ const Page = async (props: PageProps) => {
     const { g } = searchParams;
     const cookie = cookies();
     const ar = new AssetRepository();
+    const agr = new AssetGroupRepository();
     const as = new AssetsService();
     const assets = await ar.findBy({}, { created: 'desc' });
+    const groups = await agr.findByDto({}, { created: 'desc' });
     let group: AssetGroupDto | undefined;
     if (g) {
         let t = await as.getAssetGroup(g);
         group = await t.toObject();
     }
+
+    console.log(groups);
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
@@ -79,8 +80,8 @@ const Page = async (props: PageProps) => {
             </div>
             <Uploader group={group} />
             <div className="grid  md:grid-cols-2 gap-4">
-                {assets.map((asset) => (
-                    <AssetItem key={asset.getId()} asset={asset.toObject()} />
+                {groups.map((group) => (
+                    <AssetItem key={group.id} group={group} />
                 ))}
             </div>
         </main>
