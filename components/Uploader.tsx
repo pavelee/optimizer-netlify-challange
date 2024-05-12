@@ -17,7 +17,7 @@ const UploaderListItem = (props: { file: UploadFile }) => {
     if (file.status === 'uploading') {
         return (
             <Spin spinning={true}>
-                <List.Item>
+                <List.Item className="animate-pulse">
                     <List.Item.Meta
                         avatar={
                             <img
