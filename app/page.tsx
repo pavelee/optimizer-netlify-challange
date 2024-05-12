@@ -78,7 +78,7 @@ const Page = async (props: PageProps) => {
     const ar = new AssetRepository();
     const agr = new AssetGroupRepository();
     const as = new AssetsService();
-    const groups = await agr.findByDto({}, { created: 'desc' }, 100);
+    const groups = await agr.findByDto({}, { created: 'desc' }, 25);
     let group: AssetGroupDto | undefined;
     if (g) {
         let t = await as.getAssetGroup(g);
@@ -99,7 +99,7 @@ const Page = async (props: PageProps) => {
             </div>
             <Uploader group={group} />
             <div className='space-y-4'>
-                <h2 className="text-xl bg-white rounded-xl p-4 opacity-85 border shadow">Contributors 💖</h2>
+                <h2 className="text-xl bg-white rounded-xl p-4 opacity-85 border shadow">Contributions 💖</h2>
                 <div className="grid  md:grid-cols-4 gap-4">
                     {groups.map((group) => (
                         <AssetItem key={group.id} group={group} />
