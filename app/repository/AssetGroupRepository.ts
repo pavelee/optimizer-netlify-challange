@@ -9,7 +9,8 @@ export class AssetGroupRepository {
         query: any,
         order: {
             created?: 'asc' | 'desc';
-        }
+        },
+        limit?: number
     ): Promise<AssetGroup[]> {
         const data = await AssetGroupStore.list();
         const r = await Promise.all(
@@ -28,10 +29,14 @@ export class AssetGroupRepository {
             });
         }
 
+        if (limit) {
+            return r.slice(0, limit);
+        }
+
         return r;
     }
 
-    async findByDto(query: any, order: { created?: 'asc' | 'desc' }): Promise<AssetGroupDto[]> {
+    async findByDto(query: any, order: { created?: 'asc' | 'desc' }, limit?: number): Promise<AssetGroupDto[]> {
         const data = await AssetGroupStore.list();
         if (order.created) {
             data.sort((a, b) => {
@@ -48,6 +53,10 @@ export class AssetGroupRepository {
                 return await AssetGroupFactory.createFromDto(asset).then((a) => a.toObject());
             })
         );
+
+        if (limit) {
+            return r.slice(0, limit);
+        }
 
         return r;
     }

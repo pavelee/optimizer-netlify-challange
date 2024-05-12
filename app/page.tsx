@@ -2,12 +2,13 @@ import { Uploader } from 'components/Uploader';
 import { cookies } from 'next/headers';
 import { AssetsService } from './services/AssetsService';
 import { AssetDTO } from './models/Asset';
-import { Carousel, Image, Progress } from 'antd';
+import { Card, Carousel, Image, Progress } from 'antd';
 import { AssetRepository } from './repository/AssetRepository';
 import { AssetGroupDto } from './dto/AssetGroupDto';
 import { AssetGroupRepository } from './repository/AssetGroupRepository';
 import { Summary } from 'components/summary';
 import { CARBON_UNIT } from './_config/constants';
+import { formatDistanceToNow } from 'date-fns';
 
 type props = {
     group: AssetGroupDto;
@@ -15,6 +16,18 @@ type props = {
 
 const AssetItem = (props: props) => {
     const { group } = props;
+
+    return (
+        <Card>
+            <div className="space-y-4">
+                <div className='text-small text-gray-400'>{formatDistanceToNow(new Date(group.created))}</div>
+                <div>
+                    someone contributed {group.reductionInKb} Kb and {group.reductionInCarbon} {CARBON_UNIT}
+                </div>
+            </div>
+        </Card>
+    )
+
     return (
         <Carousel arrows infinite={true} autoplay={true}>
             {
@@ -65,15 +78,13 @@ const Page = async (props: PageProps) => {
     const ar = new AssetRepository();
     const agr = new AssetGroupRepository();
     const as = new AssetsService();
-    const assets = await ar.findBy({}, { created: 'desc' });
-    const groups = await agr.findByDto({}, { created: 'desc' });
+    const groups = await agr.findByDto({}, { created: 'desc' }, 100);
     let group: AssetGroupDto | undefined;
     if (g) {
         let t = await as.getAssetGroup(g);
         group = await t.toObject();
     }
     const summarize = await agr.summarizeReduction();
-    console.log(summarize);
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
@@ -89,7 +100,7 @@ const Page = async (props: PageProps) => {
             <Uploader group={group} />
             <div className='space-y-4'>
                 <h2 className="text-xl bg-white rounded-xl p-4 opacity-85 border shadow">Contributors 💖</h2>
-                <div className="grid  md:grid-cols-2 gap-4">
+                <div className="grid  md:grid-cols-4 gap-4">
                     {groups.map((group) => (
                         <AssetItem key={group.id} group={group} />
                     ))}
