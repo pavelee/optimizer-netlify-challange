@@ -1,8 +1,7 @@
 import { Uploader } from 'components/Uploader';
 import { cookies } from 'next/headers';
 import { AssetsService } from './services/AssetsService';
-import { AssetDTO } from './models/Asset';
-import { Card, Carousel, Image, Progress } from 'antd';
+import { Card, Image } from 'antd';
 import { AssetRepository } from './repository/AssetRepository';
 import { AssetGroupDto } from './dto/AssetGroupDto';
 import { AssetGroupRepository } from './repository/AssetGroupRepository';
@@ -26,42 +25,6 @@ const AssetItem = (props: props) => {
                 </div>
             </div>
         </Card>
-    )
-
-    return (
-        <Carousel arrows infinite={true} autoplay={true}>
-            {
-                group.assets.map((asset: AssetDTO) => {
-                    return (
-                        <div key={asset.id} className="flex gap-4 rounded-xl relative w-[100%] h-[100%] shadow">
-                            <div
-                                className="
-                            absolute p-5 rounded-xl border bg-white z-50
-                            flex flex-col gap-2 justify-center items-center
-                        "
-                                style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
-                            >
-                                <Progress
-                                    type="dashboard"
-                                    percent={asset.optimizationPercent}
-                                    size={80}
-                                    strokeColor="green"
-                                />
-                                <span>{asset.reductionInKb} kB</span>
-                                <span>{asset.reductionInCarbon} {CARBON_UNIT}</span>
-                            </div>
-                            <div>
-                                <Image
-                                    src={`/api/image/${asset.optimizedFile.key}`}
-                                    alt=""
-                                    className="w-32 h-32 object-cover"
-                                />
-                            </div>
-                        </div>
-                    );
-                })
-            }
-        </Carousel>
     );
 };
 
