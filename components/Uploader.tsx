@@ -76,7 +76,7 @@ const UploaderListItem = (props: { file: UploadFile }) => {
                     }
                     title={file.response.optimizedFile.fullName}
                     description={`
-                You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB) (${file.response.reductionInCarbon} ${CARBON_UNIT})
+                You saved ${file.response.optimizationPercent}% (${file.response.smartReduction.value} ${file.response.smartReduction.unit}) (${file.response.reductionInCarbon} ${CARBON_UNIT})
             `}
                 />
             </List.Item>

@@ -1,6 +1,7 @@
 import { bytesToCo2 } from 'bytes-to-co2';
 import { File, FileDTO } from './File';
 import { MathRounder } from 'app/services/MathRounder';
+import { SmartReduction } from './AssetGroup';
 
 export type AssetDTO = {
     id: string;
@@ -8,6 +9,7 @@ export type AssetDTO = {
     originalFile: FileDTO;
     optimizedFile?: FileDTO;
     optimizationPercent?: number;
+    smartReduction?: SmartReduction;
     reductionInCarbon?: number;
     reductionInB?: number;
     reductionInKb?: number;
@@ -87,12 +89,21 @@ export class Asset {
         return this.round(co2, 2);
     }
 
+    public getSmartReductionInBestUnit(): SmartReduction {
+        const reductionInKb = this.getSizeReductionIn('KB');
+        if (reductionInKb > 1024) {
+            return { value: this.getSizeReductionIn('MB'), unit: 'MB' };
+        }
+        return { value: reductionInKb, unit: 'KB' };
+    }
+
     toObject(): AssetDTO {
         return {
             id: this.id,
             originalFile: this.originalFile.toObject(),
             optimizedFile: this.optimizedFile ? this.optimizedFile.toObject() : undefined,
             optimizationPercent: this.getSizeOptimizationInPercent(),
+            smartReduction: this.getSmartReductionInBestUnit(),
             reductionInB: this.getSizeReductionIn('B'),
             reductionInKb: this.getSizeReductionIn('KB'),
             reductionInMb: this.getSizeReductionIn('MB'),
