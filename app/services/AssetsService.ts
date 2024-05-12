@@ -45,7 +45,7 @@ export class AssetsService {
     public async optimizeAsset(asset: Asset): Promise<Asset> {
         // const file = await BlobStore.get(asset.getOriginalFile().getKey());
         const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey());
-        const extension = asset.getOriginalFile().getExtension();
+        const extension = 'webp';//asset.getOriginalFile().getExtension();
         const optimizedHashValue = `optimized-${asset.getOriginalFile().getKey()}`;
         await BlobStore.save(optimizedHashValue, optimizedFile);
         asset.setOptimizedFile(

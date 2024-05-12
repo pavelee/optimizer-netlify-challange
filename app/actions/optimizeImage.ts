@@ -23,7 +23,7 @@ export const optimizeImage = async (key: string, q?: string, f?: string, h?: str
     if (f) {
         format = f;
     }
-
+    format = 'webp';
 
     const optimizedUrl = `${protocol}://${host}/.netlify/images?url=${encodeURIComponent(
         url
