@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export const Uploader = () => {
+    const [groupId, setGroupId] = useState<string | null>(null);
     const [files, setFiles] = useState<UploadFile[]>([]);
     const [isAnyFileUploading, setIsAnyFileUploading] = useState(false);
 
@@ -16,6 +17,27 @@ export const Uploader = () => {
             setIsAnyFileUploading(false);
         }
     }, [files]);
+
+    const getSummary = () => {
+        const totalReductionInKb = files.reduce((acc, file) => {
+            if (file.status === 'done') {
+                return acc + file.response.reductionInKb;
+            }
+            return acc;
+        }, 0);
+
+        const totalReductionInCarbon = files.reduce((acc, file) => {
+            if (file.status === 'done') {
+                return acc + file.response.reductionInCarbon;
+            }
+            return acc;
+        }, 0);
+
+        return {
+            totalReductionInKb,
+            totalReductionInCarbon
+        };
+    }
 
     const isPossibleToDownloadAll = () => {
         return isAnyFileUploading === false;
@@ -29,6 +51,16 @@ export const Uploader = () => {
                 multiple={true}
                 showUploadList={false}
                 action="/api/image/optimize"
+                customRequest={async (options) => {
+                    const form = new FormData();
+                    form.append('file', options.file);
+                    const response = await fetch('/api/image/optimize', {
+                        method: 'POST',
+                        body: form
+                    });
+                    const json = await response.json();
+                    options.onSuccess(json);
+                }}
                 accept=".png,.jpg,.jpeg"
                 onChange={(info) => {
                     // upload(info.file.originFileObj);
@@ -114,11 +146,16 @@ export const Uploader = () => {
                             return null;
                         }}
                     />
-                    {isPossibleToDownloadAll() && (
-                        <div className="w-full flex justify-end">
-                            <Button type="primary">Download All</Button>
+                    <div className="flex items-center">
+                        <div className='text-gray-400 text-sm grow'>
+                            🌲 Total reduction: {getSummary().totalReductionInKb} kB ({getSummary().totalReductionInCarbon} co2)
                         </div>
-                    )}
+                        {isPossibleToDownloadAll() && (
+                            <div className="flex justify-end">
+                                <Button type="primary">Download All</Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

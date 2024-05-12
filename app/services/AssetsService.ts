@@ -1,12 +1,20 @@
-import { BlobStore, JsonStore } from 'app/_config/store';
+import { AssetGroupStore, BlobStore, JsonStore } from 'app/_config/store';
 import { AssetFactory } from 'app/factories/AssetFactory';
 import { Asset } from 'app/models/Asset';
 import { Hasher } from 'app/utils/hasher';
 import { File } from 'app/models/File';
 import { optimizeImage } from 'app/actions/optimizeImage';
 import { FileFactory } from 'app/factories/FileFactory';
+import { AssetGroup } from 'app/models/AssetGroup';
 
 export class AssetsService {
+    public async createAssetGroup(assets: Asset[] = []): Promise<AssetGroup> {
+        const id = Hasher.hash();
+        const assetGroup = new AssetGroup(id, new Date(), assets);
+        await this.saveGroupAsset(assetGroup);
+        return assetGroup;
+    }
+
     public async createAsset(file: Blob): Promise<Asset> {
         const hash = Hasher.hash();
         const extension = file.type.split('/')[1];
@@ -33,6 +41,10 @@ export class AssetsService {
 
     public async saveAsset(asset: Asset) {
         await JsonStore.save(asset.getId(), asset.toObject());
+    }
+
+    public async saveGroupAsset(asset: AssetGroup) {
+        await AssetGroupStore.save(asset.getId(), asset.toObject());
     }
 
     public async getAsset(assetId: string): Promise<Asset> {
