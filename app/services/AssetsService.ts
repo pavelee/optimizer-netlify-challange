@@ -1,7 +1,7 @@
 import { AssetGroupStore, BlobStore, JsonStore } from 'app/_config/store';
 import { AssetFactory } from 'app/factories/AssetFactory';
 import { Asset } from 'app/models/Asset';
-import { Hasher } from 'app/utils/hasher';
+import { UniqueHashGenerator } from 'app/utils/hasher';
 import { File } from 'app/models/File';
 import { optimizeImage } from 'app/actions/optimizeImage';
 import { FileFactory } from 'app/factories/FileFactory';
@@ -9,18 +9,18 @@ import { AssetGroup } from 'app/models/AssetGroup';
 
 export class AssetsService {
     public async createAssetGroup(assets: Asset[] = []): Promise<AssetGroup> {
-        const id = Hasher.hash();
+        const id = UniqueHashGenerator.generateHash();
         const assetGroup = new AssetGroup(id, new Date(), assets);
         await this.saveGroupAsset(assetGroup);
         return assetGroup;
     }
 
     public async createAsset(file: Blob): Promise<Asset> {
-        const hash = Hasher.hash();
+        const hash = UniqueHashGenerator.generateHash();
         const extension = file.type.split('/')[1];
         await BlobStore.save(hash, file);
         const f = new File(hash, file.size, extension);
-        const assetHash = Hasher.hash();
+        const assetHash = UniqueHashGenerator.generateHash();
         const a = new Asset(assetHash, new Date(), f);
         await this.saveAsset(a);
         return a;
@@ -30,10 +30,10 @@ export class AssetsService {
         // const file = await BlobStore.get(asset.getOriginalFile().getKey());
         const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey());
         const extension = optimizedFile.type.split('/')[1];
-        const opimizedHash = `optimized-${asset.getOriginalFile().getKey()}`;
-        await BlobStore.save(opimizedHash, optimizedFile);
+        const optimizedHashValue = `optimized-${asset.getOriginalFile().getKey()}`;
+        await BlobStore.save(optimizedHashValue, optimizedFile);
         asset.setOptimizedFile(
-            FileFactory.createFromDTO({ key: opimizedHash, size: optimizedFile.size, extension: extension })
+            FileFactory.createFromDTO({ key: optimizedHashValue, size: optimizedFile.size, extension: extension })
         );
         await this.saveAsset(asset);
         return asset;
