@@ -19,7 +19,7 @@ const AssetItem = (props: props) => {
 
     return (
         <Card>
-            <div className="space-y-4">
+            <div className="space-y-5">
                 <div className='text-small text-gray-400'>{formatDistanceToNow(new Date(group.created))}</div>
                 <div>
                     someone contributed <strong>{group.reductionInCarbon} {CARBON_UNIT}</strong>
@@ -99,7 +99,7 @@ const Page = async (props: PageProps) => {
             </div>
             <Uploader group={group} />
             <div className='space-y-4'>
-                <h2 className="text-xl bg-white rounded-xl p-4 opacity-85 border shadow">Contributions 💖</h2>
+                <h2 className="text-xl bg-white rounded-xl p-5 opacity-85 border shadow">Contributions 💖</h2>
                 <div className="grid  md:grid-cols-4 gap-4">
                     {groups.map((group) => (
                         <AssetItem key={group.id} group={group} />
