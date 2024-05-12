@@ -42,9 +42,9 @@ export class AssetsService {
         return a;
     }
 
-    public async optimizeAsset(asset: Asset): Promise<Asset> {
+    public async optimizeAsset(asset: Asset, quality: number = 75): Promise<Asset> {
         // const file = await BlobStore.get(asset.getOriginalFile().getKey());
-        const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey());
+        const optimizedFile = await optimizeImage(asset.getOriginalFile().getKey(), quality.toString());
         const extension = 'webp';//asset.getOriginalFile().getExtension();
         const optimizedHashValue = `optimized-${asset.getOriginalFile().getKey()}`;
         await BlobStore.save(optimizedHashValue, optimizedFile);

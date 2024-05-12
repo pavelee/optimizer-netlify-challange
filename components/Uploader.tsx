@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Image, List, Spin, Upload, UploadFile } from 'antd';
+import { Button, Image, List, Slider, Spin, Upload, UploadFile } from 'antd';
 import { CARBON_UNIT } from 'app/_config/constants';
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { useRouter } from 'next/navigation';
@@ -14,6 +14,7 @@ export const Uploader = (props: UploaderProps) => {
     const { group } = props;
     const router = useRouter();
     const [assetGroup, setAssetGroup] = useState<AssetGroupDto | undefined>(group);
+    const [quality, setQuality] = useState(75);
     const [files, setFiles] = useState<UploadFile[]>([]);
     const [isAnyFileUploading, setIsAnyFileUploading] = useState(false);
 
@@ -113,6 +114,7 @@ export const Uploader = (props: UploaderProps) => {
                     // @ts-ignore it exists.. 😭
                     form.append('fileName', options.file.name ? options.file.name : 'file');
                     form.append('groupId', g.id);
+                    form.append('q', quality.toString());
                     const response = await fetch('/api/image/optimize', {
                         method: 'POST',
                         body: form
@@ -134,7 +136,7 @@ export const Uploader = (props: UploaderProps) => {
                         if (assetGroup) {
                             refreshAssetGroup(assetGroup);
                         }
-                        router.refresh();
+                        // router.refresh();
                         // message.success(`${info.file.name} file uploaded successfully.`);
                     } else if (status === 'error') {
                         // message.error(`${info.file.name} file upload failed.`);
@@ -149,6 +151,13 @@ export const Uploader = (props: UploaderProps) => {
                     files.
                 </p>
             </Upload.Dragger>
+            <div className="space-y-2">
+                <div className="flex flex-col justify-center items-center text-gray-600">quality - the less the better saving ({quality}%)</div>
+                <Slider
+                    value={quality}
+                    onChange={(value) => setQuality(value)}
+                />
+            </div>
             {files.length > 0 && (
                 <div className="space-y-4">
                     <List

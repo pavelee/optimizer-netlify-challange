@@ -6,6 +6,7 @@ export const POST = async (request: NextRequest) => {
     const file = form.get('file') as Blob;
     const groupId = form.get('groupId') as string | undefined;
     const fileName = form.get('fileName') as string | undefined;
+    const quality = form.get('q') as string | undefined;
 
     const as = new AssetsService();
     const asset = await as.createAsset(file, fileName);
@@ -13,7 +14,13 @@ export const POST = async (request: NextRequest) => {
         const group = await as.getAssetGroup(groupId);
         await as.addAssetToGroup(group, asset);
     }
-    await as.optimizeAsset(asset);
+
+    let q = parseInt(quality);
+    if (isNaN(q) || q < 1 || q > 100) {
+        q = 75;
+    }
+
+    await as.optimizeAsset(asset, q);
 
     return NextResponse.json(asset.toObject());
 };
