@@ -19,7 +19,7 @@ export const GET = async (request: NextRequest, params: props) => {
     const blobs = [];
     for (const asset of group.getAssets()) {
         const blob = await BlobStore.get(asset.getOptimizedFile().getKey());
-        zip.file(asset.getOriginalFile().getName(), blob.arrayBuffer());
+        zip.file(asset.getOriginalFile().getFullName(), blob.arrayBuffer());
     }
 
     const blob = await zip.generateAsync({ type: 'blob' });

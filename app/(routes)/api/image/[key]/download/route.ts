@@ -22,8 +22,7 @@ export const GET = async (request: NextRequest, props: props) => {
 
     const blob = await BlobStore.get(key);
     const response = new NextResponse(blob);
-    const extension = image.getExtension();
-    const filename = `${key}.${extension}`;
+    const filename = image.getFullName();
     response.headers.set('Content-Disposition', `attachment; filename="${filename}"`);
 
     return response;

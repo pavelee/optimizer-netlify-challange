@@ -30,7 +30,8 @@ export const Uploader = (props: UploaderProps) => {
     }, [setFiles, group]);
 
     useEffect(() => {
-        if (files.some((file) => file.status === 'uploading')) {
+        const uploadingCount = files.filter((file) => file.status === 'uploading');
+        if (uploadingCount.length > 0) {
             setIsAnyFileUploading(true);
         } else {
             setIsAnyFileUploading(false);
@@ -46,12 +47,12 @@ export const Uploader = (props: UploaderProps) => {
     const refreshAssetGroup = async (group: AssetGroupDto) => {
         const response = await fetch(`/api/group/${group.id}`);
         const json = await response.json();
-        setFiles(json.assets.map((asset) => ({
-            uid: asset.id,
-            name: asset.optimizedFile.name,
-            status: 'done',
-            response: asset
-        })));
+        // setFiles(json.assets.map((asset) => ({
+        //     uid: asset.id,
+        //     name: asset.optimizedFile.name,
+        //     status: 'done',
+        //     response: asset
+        // })));
         setAssetGroup(json);
     }
 
@@ -125,7 +126,15 @@ export const Uploader = (props: UploaderProps) => {
                 accept=".png,.jpg,.jpeg"
                 onChange={(info) => {
                     setFiles([
-                        ...files,
+                        // ...files,
+                        ...(group ? group.assets.map((asset) => {
+                            return {
+                                uid: asset.id,
+                                name: asset.optimizedFile.name,
+                                status: 'done',
+                                response: asset
+                            } as UploadFile;
+                        }) : []),
                         ...info.fileList
                     ]);
                     const { status } = info.file;
@@ -178,7 +187,7 @@ export const Uploader = (props: UploaderProps) => {
                                                     />
                                                 }
                                                 title={file.name}
-                                                description={`Uploading...`}
+                                                description={`optimizing...`}
                                             />
                                         </List.Item>
                                     </Spin>
