@@ -190,7 +190,7 @@ export const Uploader = (props: UploaderProps) => {
             }
             options.onSuccess(json);
         } catch (e) {
-            options.onError(e);
+            options.onError(e.message);
         }
     }, [assetGroup, quality, addGroupIdToCurrentUrl]);
 
