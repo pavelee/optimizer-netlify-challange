@@ -34,6 +34,26 @@ const UploaderListItem = (props: { file: UploadFile }) => {
         );
     }
 
+    if (file.status === 'error') {
+        return (
+            <List.Item>
+                <List.Item.Meta
+                    avatar={
+                        <img
+                            src={URL.createObjectURL(file.originFileObj)}
+                            alt=""
+                            style={{ height: '50px' }}
+                        />
+                    }
+                    title={file.name}
+                    description={
+                        <span className="text-red-500">Error: {file.error}</span>
+                    }
+                />
+            </List.Item>
+        );
+    }
+
     if (file.status === 'done') {
         return (
             <List.Item
@@ -155,12 +175,19 @@ export const Uploader = (props: UploaderProps) => {
         form.append('fileName', options.file.name ? options.file.name : 'file');
         form.append('groupId', g.id);
         form.append('q', quality.toString());
-        const response = await fetch('/api/image/optimize', {
-            method: 'POST',
-            body: form
-        });
-        const json = await response.json();
-        options.onSuccess(json);
+        try {
+            const response = await fetch('/api/image/optimize', {
+                method: 'POST',
+                body: form
+            });
+            const json = await response.json();
+            if (response.status !== 200) {
+                return options.onError(json.error);
+            }
+            options.onSuccess(json);
+        } catch (e) {
+            options.onError(e);
+        }
     }, [assetGroup, quality, addGroupIdToCurrentUrl]);
 
     return (
