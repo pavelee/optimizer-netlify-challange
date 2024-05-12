@@ -240,7 +240,17 @@ export const Uploader = (props: UploaderProps) => {
                             )
                         }
                         {isPossibleToDownloadAll() && (
-                            <div className="flex justify-end">
+                            <div className="flex justify-end gap-2">
+                                <Button
+                                    onClick={async () => {
+                                        try {
+                                            const url = window.location.href;
+                                            await navigator.clipboard.writeText(url);
+                                        } catch (err) {
+                                            console.log(err);
+                                        }
+                                    }}
+                                >copy link</Button>
                                 <a href={`api/group/${assetGroup.id}/download`}>
                                     <Button type="primary">Download All</Button>
                                 </a>
