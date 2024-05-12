@@ -46,6 +46,9 @@ export class Asset {
         if (!this.optimizedFile) {
             return 0;
         }
+        if (this.optimizedFile.getSize() > this.originalFile.getSize()) {
+            return 0;
+        }
         return Math.round((1 - this.optimizedFile.getSize() / this.originalFile.getSize()) * 100);
     }
 
@@ -55,6 +58,9 @@ export class Asset {
 
     public getSizeReductionIn(unit: 'KB' | 'MB' | 'B' = 'KB') {
         if (!this.optimizedFile) {
+            return 0;
+        }
+        if (this.optimizedFile.getSize() > this.originalFile.getSize()) {
             return 0;
         }
         const size = Math.round(this.originalFile.getSize() - this.optimizedFile.getSize());
