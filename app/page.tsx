@@ -73,8 +73,11 @@ const Page = async (props: PageProps) => {
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
-            <div className="flex justify-center items-center gap-4 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white">
-                Save the 🌍 with <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
+            <div className="flex justify-center items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white">
+                {['minify', 'your', '🏞️', 'and', 'save', 'the', '🌍', 'with'].map((word) => (
+                    <span key={word}>{word}</span>
+                ))}
+                <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
             </div>
             <Uploader group={group} />
             <div className="grid  md:grid-cols-2 gap-4">
