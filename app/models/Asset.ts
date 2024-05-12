@@ -57,14 +57,14 @@ export class Asset {
         if (!this.optimizedFile) {
             return 0;
         }
-        const size = Math.round(this.originalFile.getSize() - this.optimizedFile.getSize()) * 100;
+        const size = Math.round(this.originalFile.getSize() - this.optimizedFile.getSize());
         switch (unit) {
             case 'B':
                 return this.round(size, 0);
             case 'KB':
                 return this.round(size / 1024, 0);
             case 'MB':
-                return this.round(size / 1024 / 1024, 0);
+                return this.round(size / 1024 / 1024, 2);
             default:
                 throw new Error('Invalid unit');
         }

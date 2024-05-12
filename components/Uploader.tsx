@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Form, Image, List, Spin, Upload, UploadFile } from 'antd';
+import { Button, Image, List, Spin, Upload, UploadFile } from 'antd';
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ type UploaderProps = {
 
 export const Uploader = (props: UploaderProps) => {
     const { group } = props;
+    const router = useRouter();
     const [assetGroup, setAssetGroup] = useState<AssetGroupDto | undefined>(group);
     const [files, setFiles] = useState<UploadFile[]>([]);
     const [isAnyFileUploading, setIsAnyFileUploading] = useState(false);
@@ -34,9 +35,21 @@ export const Uploader = (props: UploaderProps) => {
         }
     }, [files]);
 
+    useEffect(() => {
+        if (isAnyFileUploading === false) {
+            // router.refresh();
+        }
+    }, [isAnyFileUploading, router]);
+
     const refreshAssetGroup = async (group: AssetGroupDto) => {
         const response = await fetch(`/api/group/${group.id}`);
         const json = await response.json();
+        setFiles(json.assets.map((asset) => ({
+            uid: asset.id,
+            name: asset.optimizedFile.name,
+            status: 'done',
+            response: asset
+        })));
         setAssetGroup(json);
     }
 
@@ -68,10 +81,9 @@ export const Uploader = (props: UploaderProps) => {
     }
 
     const isPossibleToDownloadAll = () => {
-        return isAnyFileUploading === false;
+        return isAnyFileUploading === false && assetGroup && assetGroup.assets.length > 0;
     };
 
-    const router = useRouter();
     return (
         <div className='bg-white p-5 rounded-xl space-y-5'>
             <Upload.Dragger
@@ -95,8 +107,6 @@ export const Uploader = (props: UploaderProps) => {
                         addGroupIdToCurrentUrl(g.id);
                     }
 
-                    console.log(options);
-
                     const form = new FormData();
                     form.append('file', options.file);
                     // @ts-ignore it exists.. 😭
@@ -112,17 +122,11 @@ export const Uploader = (props: UploaderProps) => {
                 accept=".png,.jpg,.jpeg"
                 onChange={(info) => {
                     setFiles([
-                        ...(assetGroup ? assetGroup.assets.map((asset) => ({
-                            uid: asset.id,
-                            name: asset.optimizedFile.name,
-                            status: 'done',
-                            response: asset
-                        })) as UploadFile<any>[] : []),
+                        ...files,
                         ...info.fileList
                     ]);
                     const { status } = info.file;
                     if (status !== 'uploading') {
-                        console.log(info.file, info.fileList);
                         // setFiles(info.fileList);
                     }
                     if (status === 'done') {
@@ -207,13 +211,15 @@ export const Uploader = (props: UploaderProps) => {
                         {
                             assetGroup && (
                                 <div className='text-gray-400 text-sm grow'>
-                                    🌲 Total reduction: {assetGroup.reductionInKb} kB ({assetGroup.reductionInCarbon} co2)
+                                    🌲 Total reduction: {assetGroup.smartReduction} ({assetGroup.reductionInCarbon} co2)
                                 </div>
                             )
                         }
                         {isPossibleToDownloadAll() && (
                             <div className="flex justify-end">
-                                <Button type="primary">Download All</Button>
+                                <a href={`api/group/${assetGroup.id}/download`}>
+                                    <Button type="primary">Download All</Button>
+                                </a>
                             </div>
                         )}
                     </div>

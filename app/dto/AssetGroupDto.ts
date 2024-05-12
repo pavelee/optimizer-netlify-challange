@@ -3,6 +3,7 @@ import { AssetDTO } from 'app/models/Asset';
 export type AssetGroupDto = {
     id: string;
     assets: AssetDTO[];
+    smartReduction?: string;
     reductionInB?: number;
     reductionInKb?: number;
     reductionInMb?: number;

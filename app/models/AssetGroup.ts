@@ -43,10 +43,19 @@ export class AssetGroup {
         );
     }
 
+    public getSmartReductionInBestUnit(): string {
+        const reductionInKb = this.getReductionIn('KB');
+        if (reductionInKb > 1024) {
+            return `${this.getReductionIn('MB')} MB`;
+        }
+        return `${reductionInKb} KB`;
+    }
+
     public toObject(): AssetGroupDto {
         return {
             id: this.id,
             assets: this.assets.map((asset) => asset.toObject()),
+            smartReduction: this.getSmartReductionInBestUnit(),
             reductionInB: this.getReductionIn('B'),
             reductionInKb: this.getReductionIn('KB'),
             reductionInMb: this.getReductionIn('MB'),
