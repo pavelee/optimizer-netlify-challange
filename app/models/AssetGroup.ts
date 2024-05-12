@@ -2,6 +2,11 @@ import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { Asset } from './Asset';
 import { MathRounder } from 'app/services/MathRounder';
 
+export type SmartReduction = {
+    value: number;
+    unit: 'KB' | 'MB';
+};
+
 export class AssetGroup {
     constructor(private id: string, private created: Date, private assets: Asset[] = []) {}
 
@@ -43,12 +48,12 @@ export class AssetGroup {
         );
     }
 
-    public getSmartReductionInBestUnit(): string {
+    public getSmartReductionInBestUnit(): SmartReduction {
         const reductionInKb = this.getReductionIn('KB');
         if (reductionInKb > 1024) {
-            return `${this.getReductionIn('MB')} MB`;
+            return { value: this.getReductionIn('MB'), unit: 'MB' };
         }
-        return `${reductionInKb} KB`;
+        return { value: reductionInKb, unit: 'KB' };
     }
 
     public toObject(): AssetGroupDto {

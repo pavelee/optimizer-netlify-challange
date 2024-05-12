@@ -1,3 +1,4 @@
+import { CARBON_UNIT } from 'app/_config/constants';
 import { AssetGroupStore } from 'app/_config/store';
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { AssetGroupFactory } from 'app/factories/AssetGroupFactory';
@@ -49,5 +50,33 @@ export class AssetGroupRepository {
         );
 
         return r;
+    }
+
+    async summarizeReduction(): Promise<{
+        smartReduction: number;
+        smartReductionUnit: string;
+        reductionInCarbon: number;
+        reductionInCarbonUnit: string;
+    }> {
+        const data = await AssetGroupStore.list();
+        const assetGroups = await Promise.all(
+            data.map(async (asset: AssetGroupDto) => {
+                return await AssetGroupFactory.createFromDto(asset);
+            })
+        );
+
+        let bestUnit = 'KB';
+        const smartReduction = assetGroups.reduce((acc, assetGroup) => {
+            const { value, unit } = assetGroup.getSmartReductionInBestUnit();
+            bestUnit = unit;
+            return acc + value;
+        }, 0);
+
+        const reductionInCarbon = assetGroups.reduce((acc, assetGroup) => {
+            return acc + assetGroup.getReductionInCarbon();
+        }, 0);
+        const carbonUnit = CARBON_UNIT;
+
+        return { smartReduction, smartReductionUnit: bestUnit, reductionInCarbon, reductionInCarbonUnit: carbonUnit };
     }
 }

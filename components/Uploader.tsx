@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Image, List, Spin, Upload, UploadFile } from 'antd';
+import { CARBON_UNIT } from 'app/_config/constants';
 import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -133,7 +134,7 @@ export const Uploader = (props: UploaderProps) => {
                         if (assetGroup) {
                             refreshAssetGroup(assetGroup);
                         }
-                        // router.refresh();
+                        router.refresh();
                         // message.success(`${info.file.name} file uploaded successfully.`);
                     } else if (status === 'error') {
                         // message.error(`${info.file.name} file upload failed.`);
@@ -197,7 +198,7 @@ export const Uploader = (props: UploaderProps) => {
                                             }
                                             title={file.name}
                                             description={`
-                                        You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB) (${file.response.reductionInCarbon} co2)
+                                        You saved ${file.response.optimizationPercent}% (${file.response.reductionInKb} kB) (${file.response.reductionInCarbon} ${CARBON_UNIT})
                                     `}
                                         />
                                     </List.Item>
@@ -211,7 +212,7 @@ export const Uploader = (props: UploaderProps) => {
                         {
                             assetGroup && (
                                 <div className='text-gray-400 text-sm grow'>
-                                    🌲 Total reduction: {assetGroup.smartReduction} ({assetGroup.reductionInCarbon} co2)
+                                    🌲 Total reduction: {assetGroup.smartReduction.value} {assetGroup.smartReduction.unit} ({assetGroup.reductionInCarbon} {CARBON_UNIT})
                                 </div>
                             )
                         }

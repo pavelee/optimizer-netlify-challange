@@ -6,6 +6,8 @@ import { Carousel, Image, Progress } from 'antd';
 import { AssetRepository } from './repository/AssetRepository';
 import { AssetGroupDto } from './dto/AssetGroupDto';
 import { AssetGroupRepository } from './repository/AssetGroupRepository';
+import { Summary } from 'components/summary';
+import { CARBON_UNIT } from './_config/constants';
 
 type props = {
     group: AssetGroupDto;
@@ -33,7 +35,7 @@ const AssetItem = (props: props) => {
                                     strokeColor="green"
                                 />
                                 <span>{asset.reductionInKb} kB</span>
-                                <span>{asset.reductionInCarbon} co2</span>
+                                <span>{asset.reductionInCarbon} {CARBON_UNIT}</span>
                             </div>
                             <div>
                                 <Image
@@ -70,14 +72,19 @@ const Page = async (props: PageProps) => {
         let t = await as.getAssetGroup(g);
         group = await t.toObject();
     }
+    const summarize = await agr.summarizeReduction();
+    console.log(summarize);
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
-            <div className="flex justify-center items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white shadow">
-                {['minify', 'your', '🏞️', 'and', 'save', 'the', '🌍', 'with'].map((word) => (
-                    <span key={word}>{word}</span>
-                ))}
-                <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
+            <div className='space-y-4'>
+                <div className="flex justify-center items-center gap-2 bg-green-600 font-semibold p-5 rounded-xl opacity-85 text-white shadow">
+                    {['minify', 'your', '🏞️', 'and', 'save', 'the', '🌍', 'with'].map((word) => (
+                        <span key={word}>{word}</span>
+                    ))}
+                    <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
+                </div>
+                <Summary summarize={summarize} />
             </div>
             <Uploader group={group} />
             <div className='space-y-4'>
