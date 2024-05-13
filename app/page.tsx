@@ -21,7 +21,7 @@ const AssetItem = (props: props) => {
             <div className="space-y-5">
                 <div className='text-small text-gray-400'>{formatDistanceToNow(new Date(group.created))}</div>
                 <div>
-                    someone reduced <strong>{group.reductionInCarbon} {CARBON_UNIT}</strong>
+                    someone reduced <strong>{group.smartReduction.value} {group.smartReduction.unit}</strong> and <strong>{group.reductionInCarbon} {CARBON_UNIT}</strong>
                 </div>
             </div>
         </Card>
