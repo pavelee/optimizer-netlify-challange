@@ -49,7 +49,12 @@ export class AssetGroup {
     }
 
     public getSizeIn(unit: 'KB' | 'MB' | 'B' = 'KB'): number {
-        return this.round(this.assets.reduce((acc, asset) => acc + asset.getSizeReductionIn(unit), 0), 2);
+        return this.round(this.assets.reduce((acc, asset) => {
+            if (!asset.getOptimizedFile()) {
+                return acc + asset.getOriginalFile().getSizeIn(unit);
+            };
+            return acc + asset.getOptimizedFile().getSizeIn(unit);
+        }, 0), 2);
     }
 
     public getSmartSizeInBestUnit(): SmartReduction {
