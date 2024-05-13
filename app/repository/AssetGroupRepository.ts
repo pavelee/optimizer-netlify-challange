@@ -29,11 +29,15 @@ export class AssetGroupRepository {
             });
         }
 
+        // only if have any assets in the grup
+        // TODO: make it as optional filter
+        const result = r.filter((asset) => asset.getAssets().length > 0);
+
         if (limit) {
-            return r.slice(0, limit);
+            return result.slice(0, limit);
         }
 
-        return r;
+        return result;
     }
 
     async findByDto(query: any, order: { created?: 'asc' | 'desc' }, limit?: number): Promise<AssetGroupDto[]> {
@@ -54,11 +58,15 @@ export class AssetGroupRepository {
             })
         );
 
+        // only if have any assets in the grup
+        // TODO: make it as optional filter
+        const result = r.filter((asset) => asset.assets.length > 0);
+
         if (limit) {
-            return r.slice(0, limit);
+            return result.slice(0, limit);
         }
 
-        return r;
+        return result;
     }
 
     async summarizeReduction(): Promise<{
