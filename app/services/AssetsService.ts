@@ -72,11 +72,8 @@ export class AssetsService {
         await AssetGroupStore.save(asset.getId(), asset.toObject());
     }
 
-    public async getAsset(assetId: string): Promise<Asset> {
+    public async getAsset(assetId: string): Promise<Asset | null> {
         const asset = await JsonStore.get(assetId);
-        if (!asset) {
-            throw new Error('Asset not found');
-        }
         return AssetFactory.createFromDTO(asset);
     }
 

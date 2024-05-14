@@ -2,9 +2,11 @@ import { AssetGroupDto } from 'app/dto/AssetGroupDto';
 import { Asset } from './Asset';
 import { MathRounder } from 'app/services/MathRounder';
 
+export type Unit = 'KB' | 'MB' | 'B';
+
 export type SmartReduction = {
     value: number;
-    unit: 'KB' | 'MB';
+    unit: Unit;
 };
 
 export class AssetGroup {
