@@ -26,9 +26,9 @@ const Page = async (props: PageProps) => {
                     ))}
                     <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
                 </div>
-                <Suspense fallback={<Skeleton />}>
+                {/* <Suspense fallback={<Skeleton />}>
                     <SummaryContainer />
-                </Suspense>
+                </Suspense> */}
             </div>
             <Suspense fallback={<Skeleton />}>
                 <UploaderContainer g={g} />
