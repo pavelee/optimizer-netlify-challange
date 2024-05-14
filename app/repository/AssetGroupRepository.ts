@@ -41,7 +41,7 @@ export class AssetGroupRepository {
     }
 
     async findByDto(query: any, order: { created?: 'asc' | 'desc' }, limit?: number): Promise<AssetGroupDto[]> {
-        const data = await AssetGroupStore.list();
+        let data = await AssetGroupStore.list();
         if (order.created) {
             data.sort((a, b) => {
                 if (order.created === 'asc') {
@@ -52,21 +52,21 @@ export class AssetGroupRepository {
             });
         }
 
+        // only if have any assets in the grup
+        // TODO: make it as optional filter
+        data = data.filter((asset) => asset.assets.length > 0);
+
+        if (limit) {
+            data = data.slice(0, limit);
+        }
+
         const r = await Promise.all(
             data.map(async (asset: AssetGroupDto) => {
                 return await AssetGroupFactory.createFromDto(asset).then((a) => a.toObject());
             })
         );
 
-        // only if have any assets in the grup
-        // TODO: make it as optional filter
-        const result = r.filter((asset) => asset.assets.length > 0);
-
-        if (limit) {
-            return result.slice(0, limit);
-        }
-
-        return result;
+        return r;
     }
 
     async summarizeReduction(): Promise<{

@@ -25,7 +25,7 @@ const AssetItem = (props: props) => {
 
 export const ContributorsContainer = async () => {
     const agr = new AssetGroupRepository();
-    const groups = await agr.findByDto({}, { created: 'desc' }, 25);
+    const groups = await agr.findByDto({}, { created: 'desc' }, 5);
 
     return (
         <div className="grid  md:grid-cols-4 gap-4">
