@@ -41,7 +41,7 @@ const Page = async (props: PageProps) => {
     const ar = new AssetRepository();
     const agr = new AssetGroupRepository();
     const as = new AssetsService();
-    const groups = await agr.findByDto({}, { created: 'desc' }, 25);
+    const groups = []; //await agr.findByDto({}, { created: 'desc' }, 25);
     let group: AssetGroupDto | undefined;
     if (g) {
         let t = await as.getAssetGroup(g);
