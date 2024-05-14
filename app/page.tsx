@@ -41,14 +41,13 @@ const Page = async (props: PageProps) => {
     const ar = new AssetRepository();
     const agr = new AssetGroupRepository();
     const as = new AssetsService();
-    const groups = []; //await agr.findByDto({}, { created: 'desc' }, 25);
+    const groups = await agr.findByDto({}, { created: 'desc' }, 25);
     let group: AssetGroupDto | undefined;
     if (g) {
         let t = await as.getAssetGroup(g);
         group = await t.toObject();
     }
-    // const summarize = await agr.summarizeReduction();
-    const summarize = { smartReduction: 17, smartReductionUnit: 'MB', reductionInCarbon: 12, reductionInCarbonUnit: CARBON_UNIT };
+    const summarize = await agr.summarizeReduction();
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
