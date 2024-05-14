@@ -4,4 +4,4 @@ import { NetlifyBlobStore, NetlifyJsonStore } from 'app/utils/store/NetlifyStore
 
 export const BlobStore = new NetlifyBlobStore('images');
 export const JsonStore = new NetlifyJsonStore<AssetDTO>('data');
-export const AssetGroupStore = new NetlifyJsonStore<AssetGroupDto>('assetGroups');
+export const AssetGroupStore = new NetlifyJsonStore<AssetGroupDto>('assetGroups2');
