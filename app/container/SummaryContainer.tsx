@@ -4,14 +4,7 @@ import { Summary } from "components/summary";
 
 export const SummaryContainer = async () => {
     const agr = new AssetGroupRepository();
-    // TODO: fix it, somehow it's timeout..
-    // const summarize = await agr.summarizeReduction();
-    const summarize = {
-        smartReduction: 21  ,
-        smartReductionUnit: 'MB',
-        reductionInCarbon: 8,
-        reductionInCarbonUnit: CARBON_UNIT
-    }
+    const summarize = await agr.summarizeReduction();
 
     return (
         <Summary summarize={summarize} />

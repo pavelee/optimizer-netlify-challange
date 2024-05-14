@@ -26,19 +26,19 @@ const Page = async (props: PageProps) => {
                     ))}
                     <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
                 </div>
-                {/* <Suspense fallback={<Skeleton />}>
+                <Suspense fallback={<Skeleton />}>
                     <SummaryContainer />
-                </Suspense> */}
+                </Suspense>
             </div>
             <Suspense fallback={<Skeleton />}>
                 <UploaderContainer g={g} />
             </Suspense>
-            {/* <div className='space-y-4'>
+            <div className='space-y-4'>
                 <h2 className="text-xl bg-white rounded-xl p-5 opacity-85 border shadow">Contributions 💖</h2>
                 <Suspense fallback={<Skeleton />}>
                     <ContributorsContainer />
                 </Suspense>
-            </div> */}
+            </div>
         </main>
     );
 };
