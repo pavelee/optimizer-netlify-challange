@@ -52,7 +52,7 @@ export class NetlifyJsonStore<T> implements StoreInterface<T> {
         if (data) {
             return JSON.parse(data);
         }
-        throw new Error('Data not found');
+        return null;
     }
 
     public async list(): Promise<T[]> {
