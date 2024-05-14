@@ -1,32 +1,11 @@
 import { Uploader } from 'components/Uploader';
 import { cookies } from 'next/headers';
 import { AssetsService } from './services/AssetsService';
-import { Card, Image } from 'antd';
-import { AssetRepository } from './repository/AssetRepository';
+import { Image, Skeleton } from 'antd';
 import { AssetGroupDto } from './dto/AssetGroupDto';
-import { AssetGroupRepository } from './repository/AssetGroupRepository';
-import { Summary } from 'components/summary';
-import { CARBON_UNIT } from './_config/constants';
-import { formatDistanceToNow } from 'date-fns';
-
-type props = {
-    group: AssetGroupDto;
-};
-
-const AssetItem = (props: props) => {
-    const { group } = props;
-
-    return (
-        <Card>
-            <div className="space-y-5">
-                <div className='text-small text-gray-400'>{formatDistanceToNow(new Date(group.created))}</div>
-                <div>
-                    someone reduced <strong>{group.smartReduction.value} {group.smartReduction.unit}</strong> and <strong>{group.reductionInCarbon} {CARBON_UNIT}</strong>
-                </div>
-            </div>
-        </Card>
-    );
-};
+import { SummaryContainer } from './container/SummaryContainer';
+import { Suspense } from 'react';
+import { ContributorsContainer } from './container/ContributorsContainer';
 
 type PageProps = {
     searchParams: {
@@ -35,19 +14,15 @@ type PageProps = {
 }
 
 const Page = async (props: PageProps) => {
+    const cookie = cookies();
     const { searchParams } = props;
     const { g } = searchParams;
-    const cookie = cookies();
-    const ar = new AssetRepository();
-    const agr = new AssetGroupRepository();
     const as = new AssetsService();
-    const groups = []; //await agr.findByDto({}, { created: 'desc' }, 25);
     let group: AssetGroupDto | undefined;
     if (g) {
         let t = await as.getAssetGroup(g);
         group = await t.toObject();
     }
-    const summarize = await agr.summarizeReduction();
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
@@ -58,16 +33,16 @@ const Page = async (props: PageProps) => {
                     ))}
                     <Image src={'/netlify-logo.svg'} alt="Netlify logo" />
                 </div>
-                <Summary summarize={summarize} />
+                <Suspense fallback={<Skeleton />}>
+                    <SummaryContainer />
+                </Suspense>
             </div>
             <Uploader group={group} />
             <div className='space-y-4'>
                 <h2 className="text-xl bg-white rounded-xl p-5 opacity-85 border shadow">Contributions 💖</h2>
-                <div className="grid  md:grid-cols-4 gap-4">
-                    {groups.map((group) => (
-                        <AssetItem key={group.id} group={group} />
-                    ))}
-                </div>
+                <Suspense fallback={<Skeleton />}>
+                    <ContributorsContainer />
+                </Suspense>
             </div>
         </main>
     );
