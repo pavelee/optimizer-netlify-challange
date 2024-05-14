@@ -47,7 +47,8 @@ const Page = async (props: PageProps) => {
         let t = await as.getAssetGroup(g);
         group = await t.toObject();
     }
-    const summarize = await agr.summarizeReduction();
+    // const summarize = await agr.summarizeReduction();
+    const summarize = { smartReduction: 17, smartReductionUnit: 'MB', reductionInCarbon: 12, reductionInCarbonUnit: CARBON_UNIT };
 
     return (
         <main className="flex flex-col gap-8 sm:gap-16">
